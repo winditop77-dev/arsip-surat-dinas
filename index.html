@@ -6,8 +6,17 @@
     <title>Arsip Surat</title>
 </head>
 <body class="bg-gray-100 p-8">
-    <h1 class="text-2xl font-bold mb-4">Dashboard Arsip Surat</h1>
-    
+    <div class="text-right mb-4">
+        <div id="clock" class="text-xl font-mono font-bold text-gray-700">--:--:--</div>
+        <div id="date" class="text-sm text-gray-500">---</div>
+    </div>
+
+    <div class="mb-6">
+        <button id="btn-tambah" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+            + Tambah Surat
+        </button>
+    </div>
+
     <table class="w-full bg-white shadow rounded-lg">
         <thead>
             <tr class="bg-gray-200">
@@ -20,15 +29,29 @@
             </tbody>
     </table>
 
-    <script type="module">
-        // Kode ini hanya placeholder agar sistem tidak error.
-        // Nanti kita akan isi FirebaseConfig setelah ini berfungsi.
-        console.log("Sistem Siap");
-        
-        // Fungsi sederhana untuk memastikan tombol bisa diklik
-        document.body.onclick = function() {
-            console.log("Halaman bisa diklik!");
+    <script>
+        // 1. Fungsi Jam & Tanggal
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString();
+            document.getElementById('date').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // 2. Fungsi Tombol Tambah
+        document.getElementById('btn-tambah').onclick = function() {
+            alert("Tombol berhasil diklik! Form tambah akan segera muncul.");
         };
+
+        // 3. Simulasi Data (Ganti dengan Firebase nanti)
+        document.getElementById('table-body').innerHTML = `
+            <tr>
+                <td class="p-3 border">1</td>
+                <td class="p-3 border">B/001/2026</td>
+                <td class="p-3 border">Surat Undangan Rapat</td>
+            </tr>
+        `;
     </script>
 </body>
 </html>
