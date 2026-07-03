@@ -2,259 +2,33 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Kearsipan Surat | Dinas Pendidikan</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 50%, #fdf2f8 100%); 
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar { height: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; border-radius: 4px; }
-    </style>
+    <title>Arsip Surat</title>
 </head>
-<body class="text-gray-800 flex flex-col min-h-screen">
+<body class="bg-gray-100 p-8">
+    <h1 class="text-2xl font-bold mb-4">Dashboard Arsip Surat</h1>
+    
+    <table class="w-full bg-white shadow rounded-lg">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="p-3">No</th>
+                <th class="p-3">No Surat</th>
+                <th class="p-3">Uraian</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            </tbody>
+    </table>
 
-    <header class="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-30 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-md">K</div>
-                <div>
-                    <h1 class="text-lg font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">Sistem Kearsipan Surat</h1>
-                    <p class="text-xs text-indigo-500 font-bold uppercase tracking-wide">Dinas Pendidikan</p>
-                </div>
-            </div>
-            
-            <!-- Date & Time Container -->
-            <div class="flex items-center gap-2">
-                <div id="date-display" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold text-rose-600 bg-rose-50 border border-rose-100 shadow-sm">
-                    --/--/----
-                </div>
-                <div id="clock" class="text-sm font-mono font-bold text-indigo-700 bg-indigo-50 px-4 py-2 rounded-lg border border-indigo-100 shadow-sm">
-                    --:--:--
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
-        <!-- Statistik Summary Cards -->
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-8">
-            <div class="bg-gradient-to-br from-blue-400 via-blue-500 to-sky-600 rounded-xl p-4 shadow-lg shadow-blue-500/20 text-white transition transform hover:-translate-y-1">
-                <div class="flex items-center justify-between">
-                    <p class="text-[10px] font-semibold uppercase tracking-wider text-blue-100">Surat Masuk</p>
-                    <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13a2 2 0 012 2v9a2 2 0 01-2 2H5l-2 3V4z"></path></svg></div>
-                </div>
-                <h3 id="stat-masuk" class="text-2xl font-black mt-2 drop-shadow">0</h3>
-            </div>
-            
-            <div class="bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 rounded-xl p-4 shadow-lg shadow-orange-500/20 text-white transition transform hover:-translate-y-1">
-                <div class="flex items-center justify-between">
-                    <p class="text-[10px] font-semibold uppercase tracking-wider text-orange-100">Surat Keluar</p>
-                    <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg></div>
-                </div>
-                <h3 id="stat-keluar" class="text-2xl font-black mt-2 drop-shadow">0</h3>
-            </div>
-            
-            <div class="bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-600 rounded-xl p-4 shadow-lg shadow-emerald-500/20 text-white transition transform hover:-translate-y-1">
-                <div class="flex items-center justify-between">
-                    <p class="text-[10px] font-semibold uppercase tracking-wider text-emerald-100">BAST</p>
-                    <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
-                </div>
-                <h3 id="stat-bast" class="text-2xl font-black mt-2 drop-shadow">0</h3>
-            </div>
-            
-            <div class="bg-gradient-to-br from-fuchsia-400 via-purple-500 to-indigo-600 rounded-xl p-4 shadow-lg shadow-purple-500/20 text-white cursor-pointer transition transform hover:-translate-y-1" onclick="toggleModal(true)">
-                <div class="flex items-center justify-between">
-                    <p class="text-[10px] font-semibold uppercase tracking-wider text-fuchsia-100">BAP</p>
-                    <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
-                </div>
-                <h3 id="stat-bap" class="text-2xl font-black mt-2 drop-shadow">0</h3>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-sm border border-indigo-50 p-6">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <h2 class="text-lg font-bold text-gray-800">Riwayat Kearsipan</h2>
-                <div class="flex w-full sm:w-auto gap-2">
-                    <input type="text" id="search-bar" onkeyup="renderTable()" placeholder="Cari Jenis, Bidang, atau No..." class="w-full pl-10 pr-4 py-2 border border-indigo-100 rounded-lg text-sm outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all shadow-inner">
-                    <button onclick="toggleModal(true)" class="bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 shadow-md hover:scale-102">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        Tambah
-                    </button>
-                    <!-- Tambahan tombol Reset Data untuk utilitas -->
-                    <button onclick="resetData()" class="bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center shadow-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-sm text-left min-w-[700px]">
-                    <thead class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white uppercase text-xs font-bold tracking-wider">
-                        <tr>
-                            <th class="py-4 px-6 w-12 text-center rounded-tl-lg">#</th>
-                            <th class="py-4 px-6">No. Surat</th>
-                            <th class="py-4 px-6">Tanggal</th>
-                            <th class="py-4 px-6">Bidang</th>
-                            <th class="py-4 px-6">Jenis</th>
-                            <th class="py-4 px-6 rounded-tr-lg">Uraian / Keterangan</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body" class="divide-y divide-indigo-50 bg-white">
-                        <tr><td colspan="6" class="py-8 text-center text-gray-400 font-medium">Memuat data kearsipan...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </main>
-
-    <!-- Notification and Modal -->
-    <div id="notification" class="fixed bottom-6 right-6 border-l-4 rounded shadow-xl p-4 hidden z-50 transform transition-all duration-300 translate-y-12 opacity-0 flex items-center gap-3">
-        <div id="notif-icon"></div>
-        <p id="notif-text" class="text-sm font-medium"></p>
-    </div>
-
-    <div id="modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 transition-opacity">
-        <div class="bg-white rounded-2xl p-6 md:p-8 max-w-lg w-full shadow-2xl transform scale-100 transition-transform border border-indigo-50">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Input Surat Baru</h2>
-                <button onclick="toggleModal(false)" class="text-gray-400 hover:text-gray-600 transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            </div>
-            
-            <form id="form-surat" class="space-y-5">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Kode Klasifikasi</label>
-                        <select id="kode" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 bg-white">
-                            <option value="B/">B/</option>
-                            <option value="B/800.1.11.1/" selected>B/800.1.11.1/</option>
-                            <option value="B/800.1.11.2/">B/800.1.11.2/</option>
-                            <option value="B/800.1.11.3/">B/800.1.11.3/</option>
-                            <option value="B/800.1.11.4/">B/800.1.11.4/</option>
-                            <option value="B/800.1.11.5/">B/800.1.11.5/</option>
-                            <option value="B/800.1.11.6/">B/800.1.11.6/</option>
-                            <option value="KU/900.1.15/">KU/900.1.15/</option>
-                            <option value="B/400.3.5/">B/400.3.5/</option>
-                            <option value="B/800.1.4.2/">B/800.1.4.2/</option>
-                            <option value="B/800.1.4.1/">B/800.1.4.1/</option>
-                            <option value="B/400.3.2/">B/400.3.2/</option>
-                            <option value="B/400.3.1/">B/400.3.1/</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">No. Urut Auto</label>
-                        <input type="text" id="no_urut" readonly class="w-full px-3 py-2.5 bg-gray-100 border border-gray-200 rounded-lg text-gray-500 cursor-not-allowed font-mono">
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Tanggal Surat</label>
-                    <input type="date" id="tgl_surat" required class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200">
-                </div>
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Bidang / Unit</label>
-                        <select id="bidang" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 bg-white">
-                            <option value="Sekretariat">Sekretariat</option>
-                            <option value="Bid SD">Bidang SD</option>
-                            <option value="SMP">Bidang SMP</option>
-                            <option value="PAUD">Bidang PAUD</option>
-                            <option value="Pengembangan">Pengembangan</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Jenis Surat</label>
-                        <select id="jenis" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 bg-white">
-                            <option value="Surat Masuk">Surat Masuk</option>
-                            <option value="Surat Keluar">Surat Keluar</option>
-                            <option value="Surat Perintah/Tugas">Surat Perintah/Tugas</option>
-                            <option value="SPJ">SPJ</option>
-                            <option value="BAST">BAST</option>
-                            <option value="BAP">BAP</option>
-                            <option value="Cuti Sakit">Cuti Sakit</option>
-                            <option value="Cuti Bersalin">Cuti Bersalin</option>
-                            <option value="Cuti Tahunan">Cuti Tahunan</option>
-                            <option value="Cuti Alasan Penting">Cuti Alasan Penting</option>
-                            <option value="Cuti Besar">Cuti Besar</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Uraian / Keterangan</label>
-                    <textarea id="uraian" placeholder="Tuliskan perihal atau uraian singkat dokumen..." required rows="3" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 resize-none"></textarea>
-                </div>
-                
-                <div class="flex gap-3 pt-2">
-                    <button type="button" onclick="toggleModal(false)" class="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">Batal</button>
-                    <button type="submit" id="btn-submit" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-semibold transition-colors flex justify-center items-center gap-2 shadow-md"><span>Simpan Data</span></button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Script tanpa Firebase (Pure LocalStorage) -->
-    <script>
-        <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-        // GANTI DENGAN CONFIG FIREBASE ANDA YANG ASLI
-        const firebaseConfig = {
-            apiKey: "ISI_API_KEY_ANDA",
-            authDomain: "ISI_PROJECT_ID.firebaseapp.com",
-            projectId: "ISI_PROJECT_ID",
-            storageBucket: "ISI_PROJECT_ID.appspot.com",
-            messagingSenderId: "ISI_SENDER_ID",
-            appId: "ISI_APP_ID"
+    <script type="module">
+        // Kode ini hanya placeholder agar sistem tidak error.
+        // Nanti kita akan isi FirebaseConfig setelah ini berfungsi.
+        console.log("Sistem Siap");
+        
+        // Fungsi sederhana untuk memastikan tombol bisa diklik
+        document.body.onclick = function() {
+            console.log("Halaman bisa diklik!");
         };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Pastikan variabel dataArsip didefinisikan
-        window.dataArsip = [];
-
-        async function loadDataFromFirebase() {
-            try {
-                const q = query(collection(db, "arsip_surat"), orderBy("tgl_input", "asc"));
-                const querySnapshot = await getDocs(q);
-                window.dataArsip = [];
-                querySnapshot.forEach((doc) => {
-                    window.dataArsip.push({ id: doc.id, ...doc.data() });
-                });
-                renderTable(); 
-            } catch (error) {
-                console.error("Gagal memuat:", error);
-            }
-        }
-
-        window.renderTable = function() {
-            const body = document.getElementById('table-body');
-            if (!body) return;
-            body.innerHTML = '';
-            window.dataArsip.forEach((d, index) => {
-                body.innerHTML += `
-                <tr>
-                    <td class="py-4 px-6">${index + 1}</td>
-                    <td class="py-4 px-6">${d.no}</td>
-                    <td class="py-4 px-6">${d.tgl}</td>
-                    <td class="py-4 px-6">${d.bidang}</td>
-                    <td class="py-4 px-6">${d.jenis}</td>
-                    <td class="py-4 px-6">${d.uraian}</td>
-                </tr>`;
-            });
-        };
-
-        loadDataFromFirebase();
-    </script>
     </script>
 </body>
 </html>
