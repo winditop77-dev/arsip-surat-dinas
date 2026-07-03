@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Kearsipan Surat | Dinas Pendidikan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 50%, #fdf2f8 100%); 
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar { height: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; border-radius: 4px; }
+    </style>
+</head>
+<body class="text-gray-800 flex flex-col min-h-screen">
+
+    <header class="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-md">K</div>
+                <div>
+                    <h1 class="text-lg font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">Sistem Kearsipan Surat</h1>
+                    <p class="text-xs text-indigo-500 font-bold uppercase tracking-wide">Dinas Pendidikan</p>
+                </div>
+            </div>
+            
+            <!-- Date & Time Container -->
+            <div class="flex items-center gap-2">
+                <div id="date-display" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold text-rose-600 bg-rose-50 border border-rose-100 shadow-sm">
+                    --/--/----
+                </div>
+                <div id="clock" class="text-sm font-mono font-bold text-indigo-700 bg-indigo-50 px-4 py-2 rounded-lg border border-indigo-100 shadow-sm">
+                    --:--:--
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+        <!-- Statistik Summary Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-8">
+            <div class="bg-gradient-to-br from-blue-400 via-blue-500 to-sky-600 rounded-xl p-4 shadow-lg shadow-blue-500/20 text-white transition transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-semibold uppercase tracking-wider text-blue-100">Surat Masuk</p>
+                    <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13a2 2 0 012 2v9a2 2 0 01-2 2H5l-2 3V4z"></path></svg></div>
+                </div>
+                <h3 id="stat-masuk" class="text-2xl font-black mt-2 drop-shadow">0</h3>
+            </div>
+            
+            <div class="bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 rounded-xl p-4 shadow-lg shadow-orange-500/20 text-white transition transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-semibold uppercase tracking-wider text-orange-100">Surat Keluar</p>
+                    <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg></div>
+                </div>
+                <h3 id="stat-keluar" class="text-2xl font-black mt-2 drop-shadow">0</h3>
+            </div>
+            
+            <div class="bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-600 rounded-xl p-4 shadow-lg shadow-emerald-500/20 text-white transition transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-semibold uppercase tracking-wider text-emerald-100">BAST</p>
+                    <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                </div>
+                <h3 id="stat-bast" class="text-2xl font-black mt-2 drop-shadow">0</h3>
+            </div>
+            
+            <div class="bg-gradient-to-br from-fuchsia-400 via-purple-500 to-indigo-600 rounded-xl p-4 shadow-lg shadow-purple-500/20 text-white cursor-pointer transition transform hover:-translate-y-1" onclick="toggleModal(true)">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-semibold uppercase tracking-wider text-fuchsia-100">BAP</p>
+                    <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                </div>
+                <h3 id="stat-bap" class="text-2xl font-black mt-2 drop-shadow">0</h3>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-indigo-50 p-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h2 class="text-lg font-bold text-gray-800">Riwayat Kearsipan</h2>
+                <div class="flex w-full sm:w-auto gap-2">
+                    <input type="text" id="search-bar" onkeyup="renderTable()" placeholder="Cari Jenis, Bidang, atau No..." class="w-full pl-10 pr-4 py-2 border border-indigo-100 rounded-lg text-sm outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all shadow-inner">
+                    <button onclick="toggleModal(true)" class="bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 shadow-md hover:scale-102">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Tambah
+                    </button>
+                    <!-- Tambahan tombol Reset Data untuk utilitas -->
+                    <button onclick="resetData()" class="bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-sm text-left min-w-[700px]">
+                    <thead class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white uppercase text-xs font-bold tracking-wider">
+                        <tr>
+                            <th class="py-4 px-6 w-12 text-center rounded-tl-lg">#</th>
+                            <th class="py-4 px-6">No. Surat</th>
+                            <th class="py-4 px-6">Tanggal</th>
+                            <th class="py-4 px-6">Bidang</th>
+                            <th class="py-4 px-6">Jenis</th>
+                            <th class="py-4 px-6 rounded-tr-lg">Uraian / Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="divide-y divide-indigo-50 bg-white">
+                        <tr><td colspan="6" class="py-8 text-center text-gray-400 font-medium">Memuat data kearsipan...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notification and Modal -->
+    <div id="notification" class="fixed bottom-6 right-6 border-l-4 rounded shadow-xl p-4 hidden z-50 transform transition-all duration-300 translate-y-12 opacity-0 flex items-center gap-3">
+        <div id="notif-icon"></div>
+        <p id="notif-text" class="text-sm font-medium"></p>
+    </div>
+
+    <div id="modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white rounded-2xl p-6 md:p-8 max-w-lg w-full shadow-2xl transform scale-100 transition-transform border border-indigo-50">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Input Surat Baru</h2>
+                <button onclick="toggleModal(false)" class="text-gray-400 hover:text-gray-600 transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            
+            <form id="form-surat" class="space-y-5">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Kode Klasifikasi</label>
+                        <select id="kode" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 bg-white">
+                            <option value="B/">B/</option>
+                            <option value="800.1.11.1/" selected>800.1.11.1/</option>
+                            <option value="800.1.11.2/">800.1.11.2/</option>
+                            <option value="800.1.11.3/">800.1.11.3/</option>
+                            <option value="800.1.11.4/">800.1.11.4/</option>
+                            <option value="800.1.11.5/">800.1.11.5/</option>
+                            <option value="800.1.11.6/">800.1.11.6/</option>
+                            <option value="900.1.15/">900.1.15/</option>
+                            <option value="400.3.5/">400.3.5/</option>
+                            <option value="800.1.4.2/">800.1.4.2/</option>
+                            <option value="800.1.4.1/">800.1.4.1/</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">No. Urut Auto</label>
+                        <input type="text" id="no_urut" readonly class="w-full px-3 py-2.5 bg-gray-100 border border-gray-200 rounded-lg text-gray-500 cursor-not-allowed font-mono">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Tanggal Surat</label>
+                    <input type="date" id="tgl_surat" required class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Bidang / Unit</label>
+                        <select id="bidang" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 bg-white">
+                            <option value="Sekretariat">Sekretariat</option>
+                            <option value="Bid SD">Bidang SD</option>
+                            <option value="SMP">Bidang SMP</option>
+                            <option value="PAUD">Bidang PAUD</option>
+                            <option value="Pengembangan">Pengembangan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Jenis Surat</label>
+                        <select id="jenis" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 bg-white">
+                            <option value="Surat Masuk">Surat Masuk</option>
+                            <option value="Surat Keluar">Surat Keluar</option>
+                            <option value="Surat Perintah/Tugas">Surat Perintah/Tugas</option>
+                            <option value="SPJ">SPJ</option>
+                            <option value="BAST">BAST</option>
+                            <option value="BAP">BAP</option>
+                            <option value="Cuti Sakit">Cuti Sakit</option>
+                            <option value="Cuti Bersalin">Cuti Bersalin</option>
+                            <option value="Cuti Tahunan">Cuti Tahunan</option>
+                            <option value="Cuti Alasan Penting">Cuti Alasan Penting</option>
+                            <option value="Cuti Besar">Cuti Besar</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Uraian / Keterangan</label>
+                    <textarea id="uraian" placeholder="Tuliskan perihal atau uraian singkat dokumen..." required rows="3" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 resize-none"></textarea>
+                </div>
+                
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="toggleModal(false)" class="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">Batal</button>
+                    <button type="submit" id="btn-submit" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-semibold transition-colors flex justify-center items-center gap-2 shadow-md"><span>Simpan Data</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script tanpa Firebase (Pure LocalStorage) -->
+    <script>
+        <script type="module">
+        // 1. Import library Firebase versi 10
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // 2. PASTE FIREBASE CONFIG ANDA DI SINI
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5Xf_CugY9KDNobVWH-xjRpML3_I8CP_o",
+            authDomain: "sistem-kearsipan-surat.firebaseapp.com",
+            projectId: "sistem-kearsipan-surat",
+            storageBucket: "sistem-kearsipan-surat.firebasestorage.app",
+            messagingSenderId: "803590066917",
+            appId: "1:803590066917:web:fc39c87efe4022976c7a0c",
+            measurementId: "G-ZKG42JS77B"
+        };
+
+        // 3. Inisialisasi Firebase & Firestore
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Variabel global untuk menyimpan data sementara agar bisa difilter
+        window.dataArsip = [];
+
+        // Fungsi Notifikasi (Sama seperti sebelumnya)
+        window.showNotification = function(message, type = 'success') {
+            const notif = document.getElementById('notification');
+            const text = document.getElementById('notif-text');
+            const icon = document.getElementById('notif-icon');
+            text.innerText = message;
+            if (type === 'error') {
+                notif.className = `fixed bottom-6 right-6 border-l-4 border-red-500 text-red-700 bg-white shadow-xl p-4 z-50 transform transition-all duration-300 flex items-center gap-3 rounded-lg`;
+                icon.innerHTML = `<svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+            } else {
+                notif.className = `fixed bottom-6 right-6 border-l-4 border-green-500 text-green-700 bg-white shadow-xl p-4 z-50 transform transition-all duration-300 flex items-center gap-3 rounded-lg`;
+                icon.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+            }
+            requestAnimationFrame(() => notif.classList.remove('hidden', 'translate-y-12', 'opacity-0'));
+            setTimeout(() => {
+                notif.classList.add('translate-y-12', 'opacity-0');
+                setTimeout(() => notif.classList.add('hidden'), 300);
+            }, 3000);
+        };
+
+        // Fungsi Render Tabel (Sama seperti sebelumnya)
+        window.renderTable = function() {
+            const body = document.getElementById('table-body');
+            const search = (document.getElementById('search-bar').value || "").toLowerCase();
+            const filtered = window.dataArsip.filter(d => (d.jenis || "").toLowerCase().includes(search) || (d.bidang || "").toLowerCase().includes(search) || (d.no || "").toLowerCase().includes(search) || (d.uraian || "").toLowerCase().includes(search));
+            
+            body.innerHTML = '';
+            if (filtered.length === 0) {
+                body.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-gray-500 font-medium">Tidak ada data arsip ditemukan.</td></tr>`;
+            } else {
+                filtered.forEach((d, index) => {
+                    const dateStr = d.tgl ? d.tgl.split('-').reverse().join('-') : '-';
+                    let typeBadgeClass = 'bg-gray-500 text-white';
+                    let borderLeftAccent = 'border-l-4 border-gray-400';
+                    let textAccentClass = 'text-gray-800';
+                    let rowBgClass = 'bg-white';
+
+                    if (d.jenis === 'Surat Masuk') { rowBgClass = 'bg-blue-50/70'; typeBadgeClass = 'bg-blue-500 text-white'; borderLeftAccent = 'border-l-4 border-blue-500'; textAccentClass = 'text-blue-700'; }
+                    else if (d.jenis === 'Surat Keluar') { rowBgClass = 'bg-amber-50/70'; typeBadgeClass = 'bg-amber-500 text-white'; borderLeftAccent = 'border-l-4 border-amber-500'; textAccentClass = 'text-amber-700'; }
+                    else if (d.jenis === 'Surat Perintah/Tugas') { rowBgClass = 'bg-cyan-50/70'; typeBadgeClass = 'bg-cyan-500 text-white'; borderLeftAccent = 'border-l-4 border-cyan-500'; textAccentClass = 'text-cyan-700'; }
+                    else if (d.jenis === 'SPJ') { rowBgClass = 'bg-slate-50/70'; typeBadgeClass = 'bg-slate-600 text-white'; borderLeftAccent = 'border-l-4 border-slate-600'; textAccentClass = 'text-slate-700'; }
+                    else if (d.jenis === 'BAST') { rowBgClass = 'bg-emerald-50/70'; typeBadgeClass = 'bg-emerald-500 text-white'; borderLeftAccent = 'border-l-4 border-emerald-500'; textAccentClass = 'text-emerald-700'; }
+                    else if (d.jenis === 'BAP') { rowBgClass = 'bg-fuchsia-50/70'; typeBadgeClass = 'bg-fuchsia-500 text-white'; borderLeftAccent = 'border-l-4 border-fuchsia-500'; textAccentClass = 'text-fuchsia-700'; }
+                    else if (d.jenis.includes('Cuti')) { rowBgClass = 'bg-purple-50/70'; typeBadgeClass = 'bg-purple-600 text-white'; borderLeftAccent = 'border-l-4 border-purple-600'; textAccentClass = 'text-purple-700'; }
+
+                    body.innerHTML += `
+                    <tr class="${rowBgClass} transition-all duration-150 hover:opacity-90">
+                        <td class="py-4 px-6 text-center font-bold text-gray-500 ${borderLeftAccent}">${index + 1}</td>
+                        <td class="py-4 px-6 font-extrabold ${textAccentClass}">${d.no}</td>
+                        <td class="py-4 px-6 font-semibold text-gray-600 whitespace-nowrap">${dateStr}</td>
+                        <td class="py-4 px-6 font-semibold text-slate-700">${d.bidang}</td>
+                        <td class="py-4 px-6"><span class="px-3 py-1.5 text-xs rounded-full border border-white/20 tracking-wide uppercase ${typeBadgeClass}">${d.jenis}</span></td>
+                        <td class="py-4 px-6 font-medium text-slate-700 max-w-xs truncate" title="${d.uraian}">${d.uraian}</td>
+                    </tr>`;
+                });
+            }
+            
+            // Update Dashboard Statistik
+            document.getElementById('stat-masuk').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Masuk').length;
+            document.getElementById('stat-keluar').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Keluar').length;
+            document.getElementById('stat-bast').innerText = window.dataArsip.filter(d => d.jenis === 'BAST').length;
+            document.getElementById('stat-bap').innerText = window.dataArsip.filter(d => d.jenis === 'BAP' || (d.jenis && d.jenis.includes('Cuti'))).length;
+        };
+
+        // 4. Fungsi Mengambil Data dari Firebase saat aplikasi dibuka
+        async function loadDataFromFirebase() {
+            try {
+                // Ambil koleksi "arsip_surat" dari Firestore dan urutkan berdasarkan waktu input
+                const q = query(collection(db, "arsip_surat"), orderBy("tgl_input", "asc"));
+                const querySnapshot = await getDocs(q);
+                
+                window.dataArsip = []; // Kosongkan array lokal
+                querySnapshot.forEach((doc) => {
+                    // Masukkan data dari internet ke array lokal
+                    window.dataArsip.push({ id: doc.id, ...doc.data() });
+                });
+                
+                window.renderTable(); // Tampilkan ke layar
+            } catch (error) {
+                console.error("Error mengambil data:", error);
+                window.showNotification("Gagal memuat data dari internet!", "error");
+            }
+        }
+
+        // 5. Fungsi Simpan (Menulis ke Firebase)
+        document.getElementById('form-surat').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSubmit = document.getElementById('btn-submit');
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = "Menyimpan..."; // Feedback visual
+            
+            try {
+                // Tambahkan dokumen baru ke koleksi "arsip_surat" di Firestore
+                await addDoc(collection(db, "arsip_surat"), {
+                    no: `${document.getElementById('kode').value}${document.getElementById('no_urut').value}`,
+                    tgl: document.getElementById('tgl_surat').value,
+                    bidang: document.getElementById('bidang').value,
+                    jenis: document.getElementById('jenis').value,
+                    uraian: document.getElementById('uraian').value,
+                    tgl_input: serverTimestamp() // Gunakan waktu server Firestore
+                });
+                
+                // Ambil ulang data terbaru setelah berhasil simpan
+                await loadDataFromFirebase();
+                
+                window.toggleModal(false);
+                e.target.reset();
+                window.showNotification("Arsip surat berhasil disimpan ke Cloud!");
+            } catch (error) {
+                console.error("Error saat menyimpan:", error);
+                window.showNotification("Gagal menyimpan data!", "error");
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = "<span>Simpan Data</span>";
+            }
+        });
+
+        // Fitur hapus data via tombol reset dimatikan agar data Cloud tidak mudah terhapus
+        window.resetData = function() {
+            window.showNotification("Fitur hapus massal dinonaktifkan demi keamanan Cloud.", "error");
+        }
+
+        window.toggleModal = function(show) {
+            const modal = document.getElementById('modal');
+            if(show) { 
+                modal.classList.remove('hidden'); 
+                document.getElementById('tgl_surat').valueAsDate = new Date(); 
+                document.getElementById('no_urut').value = (window.dataArsip.length + 1).toString().padStart(3, '0'); 
+            }
+            else { modal.classList.add('hidden'); }
+        }
+
+        // Penanda waktu dan jam
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID', { hour12: false });
+            document.getElementById('date-display').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
+        }, 1000);
+        
+        // PANGGIL FUNGSI LOAD DATA PERTAMA KALI SAAT HALAMAN DIBUKA
+        loadDataFromFirebase();
+    </script>
+    </script>
+</body>
+</html>
