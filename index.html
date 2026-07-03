@@ -203,168 +203,56 @@
     <!-- Script tanpa Firebase (Pure LocalStorage) -->
     <script>
         <script type="module">
-        // 1. Import library Firebase versi 10
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // 2. PASTE FIREBASE CONFIG ANDA DI SINI
+        // GANTI DENGAN CONFIG FIREBASE ANDA YANG ASLI
         const firebaseConfig = {
-            apiKey: "AIzaSyD5Xf_CugY9KDNobVWH-xjRpML3_I8CP_o",
-            authDomain: "sistem-kearsipan-surat.firebaseapp.com",
-            projectId: "sistem-kearsipan-surat",
-            storageBucket: "sistem-kearsipan-surat.firebasestorage.app",
-            messagingSenderId: "803590066917",
-            appId: "1:803590066917:web:fc39c87efe4022976c7a0c",
-            measurementId: "G-ZKG42JS77B"
+            apiKey: "ISI_API_KEY_ANDA",
+            authDomain: "ISI_PROJECT_ID.firebaseapp.com",
+            projectId: "ISI_PROJECT_ID",
+            storageBucket: "ISI_PROJECT_ID.appspot.com",
+            messagingSenderId: "ISI_SENDER_ID",
+            appId: "ISI_APP_ID"
         };
 
-        // 3. Inisialisasi Firebase & Firestore
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        
-        // Variabel global untuk menyimpan data sementara agar bisa difilter
+
+        // Pastikan variabel dataArsip didefinisikan
         window.dataArsip = [];
 
-        // Fungsi Notifikasi (Sama seperti sebelumnya)
-        window.showNotification = function(message, type = 'success') {
-            const notif = document.getElementById('notification');
-            const text = document.getElementById('notif-text');
-            const icon = document.getElementById('notif-icon');
-            text.innerText = message;
-            if (type === 'error') {
-                notif.className = `fixed bottom-6 right-6 border-l-4 border-red-500 text-red-700 bg-white shadow-xl p-4 z-50 transform transition-all duration-300 flex items-center gap-3 rounded-lg`;
-                icon.innerHTML = `<svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
-            } else {
-                notif.className = `fixed bottom-6 right-6 border-l-4 border-green-500 text-green-700 bg-white shadow-xl p-4 z-50 transform transition-all duration-300 flex items-center gap-3 rounded-lg`;
-                icon.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
-            }
-            requestAnimationFrame(() => notif.classList.remove('hidden', 'translate-y-12', 'opacity-0'));
-            setTimeout(() => {
-                notif.classList.add('translate-y-12', 'opacity-0');
-                setTimeout(() => notif.classList.add('hidden'), 300);
-            }, 3000);
-        };
-
-        // Fungsi Render Tabel (Sama seperti sebelumnya)
-        window.renderTable = function() {
-            const body = document.getElementById('table-body');
-            const search = (document.getElementById('search-bar').value || "").toLowerCase();
-            const filtered = window.dataArsip.filter(d => (d.jenis || "").toLowerCase().includes(search) || (d.bidang || "").toLowerCase().includes(search) || (d.no || "").toLowerCase().includes(search) || (d.uraian || "").toLowerCase().includes(search));
-            
-            body.innerHTML = '';
-            if (filtered.length === 0) {
-                body.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-gray-500 font-medium">Tidak ada data arsip ditemukan.</td></tr>`;
-            } else {
-                filtered.forEach((d, index) => {
-                    const dateStr = d.tgl ? d.tgl.split('-').reverse().join('-') : '-';
-                    let typeBadgeClass = 'bg-gray-500 text-white';
-                    let borderLeftAccent = 'border-l-4 border-gray-400';
-                    let textAccentClass = 'text-gray-800';
-                    let rowBgClass = 'bg-white';
-
-                    if (d.jenis === 'Surat Masuk') { rowBgClass = 'bg-blue-50/70'; typeBadgeClass = 'bg-blue-500 text-white'; borderLeftAccent = 'border-l-4 border-blue-500'; textAccentClass = 'text-blue-700'; }
-                    else if (d.jenis === 'Surat Keluar') { rowBgClass = 'bg-amber-50/70'; typeBadgeClass = 'bg-amber-500 text-white'; borderLeftAccent = 'border-l-4 border-amber-500'; textAccentClass = 'text-amber-700'; }
-                    else if (d.jenis === 'Surat Perintah/Tugas') { rowBgClass = 'bg-cyan-50/70'; typeBadgeClass = 'bg-cyan-500 text-white'; borderLeftAccent = 'border-l-4 border-cyan-500'; textAccentClass = 'text-cyan-700'; }
-                    else if (d.jenis === 'SPJ') { rowBgClass = 'bg-slate-50/70'; typeBadgeClass = 'bg-slate-600 text-white'; borderLeftAccent = 'border-l-4 border-slate-600'; textAccentClass = 'text-slate-700'; }
-                    else if (d.jenis === 'BAST') { rowBgClass = 'bg-emerald-50/70'; typeBadgeClass = 'bg-emerald-500 text-white'; borderLeftAccent = 'border-l-4 border-emerald-500'; textAccentClass = 'text-emerald-700'; }
-                    else if (d.jenis === 'BAP') { rowBgClass = 'bg-fuchsia-50/70'; typeBadgeClass = 'bg-fuchsia-500 text-white'; borderLeftAccent = 'border-l-4 border-fuchsia-500'; textAccentClass = 'text-fuchsia-700'; }
-                    else if (d.jenis.includes('Cuti')) { rowBgClass = 'bg-purple-50/70'; typeBadgeClass = 'bg-purple-600 text-white'; borderLeftAccent = 'border-l-4 border-purple-600'; textAccentClass = 'text-purple-700'; }
-
-                    body.innerHTML += `
-                    <tr class="${rowBgClass} transition-all duration-150 hover:opacity-90">
-                        <td class="py-4 px-6 text-center font-bold text-gray-500 ${borderLeftAccent}">${index + 1}</td>
-                        <td class="py-4 px-6 font-extrabold ${textAccentClass}">${d.no}</td>
-                        <td class="py-4 px-6 font-semibold text-gray-600 whitespace-nowrap">${dateStr}</td>
-                        <td class="py-4 px-6 font-semibold text-slate-700">${d.bidang}</td>
-                        <td class="py-4 px-6"><span class="px-3 py-1.5 text-xs rounded-full border border-white/20 tracking-wide uppercase ${typeBadgeClass}">${d.jenis}</span></td>
-                        <td class="py-4 px-6 font-medium text-slate-700 max-w-xs truncate" title="${d.uraian}">${d.uraian}</td>
-                    </tr>`;
-                });
-            }
-            
-            // Update Dashboard Statistik
-            document.getElementById('stat-masuk').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Masuk').length;
-            document.getElementById('stat-keluar').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Keluar').length;
-            document.getElementById('stat-bast').innerText = window.dataArsip.filter(d => d.jenis === 'BAST').length;
-            document.getElementById('stat-bap').innerText = window.dataArsip.filter(d => d.jenis === 'BAP' || (d.jenis && d.jenis.includes('Cuti'))).length;
-        };
-
-        // 4. Fungsi Mengambil Data dari Firebase saat aplikasi dibuka
         async function loadDataFromFirebase() {
             try {
-                // Ambil koleksi "arsip_surat" dari Firestore dan urutkan berdasarkan waktu input
                 const q = query(collection(db, "arsip_surat"), orderBy("tgl_input", "asc"));
                 const querySnapshot = await getDocs(q);
-                
-                window.dataArsip = []; // Kosongkan array lokal
+                window.dataArsip = [];
                 querySnapshot.forEach((doc) => {
-                    // Masukkan data dari internet ke array lokal
                     window.dataArsip.push({ id: doc.id, ...doc.data() });
                 });
-                
-                window.renderTable(); // Tampilkan ke layar
+                renderTable(); 
             } catch (error) {
-                console.error("Error mengambil data:", error);
-                window.showNotification("Gagal memuat data dari internet!", "error");
+                console.error("Gagal memuat:", error);
             }
         }
 
-        // 5. Fungsi Simpan (Menulis ke Firebase)
-        document.getElementById('form-surat').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btnSubmit = document.getElementById('btn-submit');
-            btnSubmit.disabled = true;
-            btnSubmit.innerHTML = "Menyimpan..."; // Feedback visual
-            
-            try {
-                // Tambahkan dokumen baru ke koleksi "arsip_surat" di Firestore
-                await addDoc(collection(db, "arsip_surat"), {
-                    no: `${document.getElementById('kode').value}${document.getElementById('no_urut').value}`,
-                    tgl: document.getElementById('tgl_surat').value,
-                    bidang: document.getElementById('bidang').value,
-                    jenis: document.getElementById('jenis').value,
-                    uraian: document.getElementById('uraian').value,
-                    tgl_input: serverTimestamp() // Gunakan waktu server Firestore
-                });
-                
-                // Ambil ulang data terbaru setelah berhasil simpan
-                await loadDataFromFirebase();
-                
-                window.toggleModal(false);
-                e.target.reset();
-                window.showNotification("Arsip surat berhasil disimpan ke Cloud!");
-            } catch (error) {
-                console.error("Error saat menyimpan:", error);
-                window.showNotification("Gagal menyimpan data!", "error");
-            } finally {
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = "<span>Simpan Data</span>";
-            }
-        });
+        window.renderTable = function() {
+            const body = document.getElementById('table-body');
+            if (!body) return;
+            body.innerHTML = '';
+            window.dataArsip.forEach((d, index) => {
+                body.innerHTML += `
+                <tr>
+                    <td class="py-4 px-6">${index + 1}</td>
+                    <td class="py-4 px-6">${d.no}</td>
+                    <td class="py-4 px-6">${d.tgl}</td>
+                    <td class="py-4 px-6">${d.bidang}</td>
+                    <td class="py-4 px-6">${d.jenis}</td>
+                    <td class="py-4 px-6">${d.uraian}</td>
+                </tr>`;
+            });
+        };
 
-        // Fitur hapus data via tombol reset dimatikan agar data Cloud tidak mudah terhapus
-        window.resetData = function() {
-            window.showNotification("Fitur hapus massal dinonaktifkan demi keamanan Cloud.", "error");
-        }
-
-        window.toggleModal = function(show) {
-            const modal = document.getElementById('modal');
-            if(show) { 
-                modal.classList.remove('hidden'); 
-                document.getElementById('tgl_surat').valueAsDate = new Date(); 
-                document.getElementById('no_urut').value = (window.dataArsip.length + 1).toString().padStart(3, '0'); 
-            }
-            else { modal.classList.add('hidden'); }
-        }
-
-        // Penanda waktu dan jam
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID', { hour12: false });
-            document.getElementById('date-display').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
-        }, 1000);
-        
-        // PANGGIL FUNGSI LOAD DATA PERTAMA KALI SAAT HALAMAN DIBUKA
         loadDataFromFirebase();
     </script>
     </script>
