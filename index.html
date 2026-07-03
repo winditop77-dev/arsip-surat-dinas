@@ -2,35 +2,44 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Arsip Surat</title>
+    <title>Dashboard Arsip Surat</title>
 </head>
-<body class="bg-gray-100 p-8">
-    <div class="text-right mb-4">
-        <div id="clock" class="text-xl font-mono font-bold text-gray-700">--:--:--</div>
-        <div id="date" class="text-sm text-gray-500">---</div>
+<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Dashboard Arsip</h1>
+        <div class="text-right">
+            <div id="clock" class="text-lg font-mono font-bold text-gray-700">--:--:--</div>
+            <div id="date" class="text-sm text-gray-500">---</div>
+        </div>
     </div>
 
     <div class="mb-6">
-        <button id="btn-tambah" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+        <button id="btn-tambah" class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition">
             + Tambah Surat
         </button>
     </div>
 
-    <table class="w-full bg-white shadow rounded-lg">
-        <thead>
-            <tr class="bg-gray-200">
-                <th class="p-3">No</th>
-                <th class="p-3">No Surat</th>
-                <th class="p-3">Uraian</th>
-            </tr>
-        </thead>
-        <tbody id="table-body">
-            </tbody>
-    </table>
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 text-gray-600 uppercase text-xs font-semibold tracking-wider">
+                        <th class="py-3 px-6">No</th>
+                        <th class="py-3 px-6">No Surat</th>
+                        <th class="py-3 px-6">Uraian</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body" class="divide-y divide-gray-100">
+                    </tbody>
+            </table>
+        </div>
+    </div>
 
     <script>
-        // 1. Fungsi Jam & Tanggal
+        // Fungsi Jam
         function updateTime() {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString();
@@ -39,17 +48,17 @@
         setInterval(updateTime, 1000);
         updateTime();
 
-        // 2. Fungsi Tombol Tambah
+        // Fungsi Tombol
         document.getElementById('btn-tambah').onclick = function() {
-            alert("Tombol berhasil diklik! Form tambah akan segera muncul.");
+            alert("Tombol aktif! Kita akan masukkan form input di sini setelah ini.");
         };
 
-        // 3. Simulasi Data (Ganti dengan Firebase nanti)
+        // Data Simulasi agar terlihat rapi
         document.getElementById('table-body').innerHTML = `
             <tr>
-                <td class="p-3 border">1</td>
-                <td class="p-3 border">B/001/2026</td>
-                <td class="p-3 border">Surat Undangan Rapat</td>
+                <td class="py-4 px-6">1</td>
+                <td class="py-4 px-6 font-bold">B/001/2026</td>
+                <td class="py-4 px-6">Surat Undangan Rapat Dinas</td>
             </tr>
         `;
     </script>
