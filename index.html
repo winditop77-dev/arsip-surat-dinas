@@ -178,11 +178,8 @@
                             <option value="SPJ">SPJ</option>
                             <option value="BAST">BAST</option>
                             <option value="BAP">BAP</option>
-                            <option value="Cuti Sakit">Cuti Sakit</option>
-                            <option value="Cuti Bersalin">Cuti Bersalin</option>
-                            <option value="Cuti Tahunan">Cuti Tahunan</option>
-                            <option value="Cuti Alasan Penting">Cuti Alasan Penting</option>
-                            <option value="Cuti Besar">Cuti Besar</option>
+                            <option value="Surat Undangan">Surat Undangan</option>
+                            <option value="Lain lain">Lain lain</option>
                         </select>
                     </div>
                 </div>
@@ -267,7 +264,8 @@
                     else if (d.jenis === 'SPJ') { rowBgClass = 'bg-slate-50/70'; typeBadgeClass = 'bg-slate-600 text-white'; borderLeftAccent = 'border-l-4 border-slate-600'; textAccentClass = 'text-slate-700'; }
                     else if (d.jenis === 'BAST') { rowBgClass = 'bg-emerald-50/70'; typeBadgeClass = 'bg-emerald-500 text-white'; borderLeftAccent = 'border-l-4 border-emerald-500'; textAccentClass = 'text-emerald-700'; }
                     else if (d.jenis === 'BAP') { rowBgClass = 'bg-fuchsia-50/70'; typeBadgeClass = 'bg-fuchsia-500 text-white'; borderLeftAccent = 'border-l-4 border-fuchsia-500'; textAccentClass = 'text-fuchsia-700'; }
-                    else if (d.jenis.includes('Cuti')) { rowBgClass = 'bg-purple-50/70'; typeBadgeClass = 'bg-purple-600 text-white'; borderLeftAccent = 'border-l-4 border-purple-600'; textAccentClass = 'text-purple-700'; }
+                    else if (d.jenis === 'Surat Undangan') { rowBgClass = 'bg-rose-50/70'; typeBadgeClass = 'bg-rose-500 text-white'; borderLeftAccent = 'border-l-4 border-rose-500'; textAccentClass = 'text-rose-700'; }
+                    else if (d.jenis === 'Lain lain') { rowBgClass = 'bg-gray-50/70'; typeBadgeClass = 'bg-gray-500 text-white'; borderLeftAccent = 'border-l-4 border-gray-500'; textAccentClass = 'text-gray-700'; }
 
                     body.innerHTML += `
                     <tr class="${rowBgClass} transition-all duration-150 hover:opacity-90">
