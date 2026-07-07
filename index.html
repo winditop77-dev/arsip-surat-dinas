@@ -6,7 +6,7 @@
     <title>Sistem Kearsipan Surat | Dinas Pendidikan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&display=swap');
         body { 
             font-family: 'Inter', sans-serif; 
             background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 50%, #fdf2f8 100%); 
@@ -30,7 +30,6 @@
                 </div>
             </div>
             
-            <!-- Date & Time Container -->
             <div class="flex items-center gap-2">
                 <div id="date-display" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold text-rose-600 bg-rose-50 border border-rose-100 shadow-sm">
                     --/--/----
@@ -43,7 +42,6 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
-        <!-- Statistik Summary Cards -->
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-8">
             <div class="bg-gradient-to-br from-blue-400 via-blue-500 to-sky-600 rounded-xl p-4 shadow-lg shadow-blue-500/20 text-white transition transform hover:-translate-y-1">
                 <div class="flex items-center justify-between">
@@ -107,8 +105,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         Tambah
                     </button>
-                    <!-- Tambahan tombol Reset Data untuk utilitas -->
-                    <button onclick="resetData()" class="bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center shadow-sm">
+                    <button onclick="resetData()" title="Hapus Semua Data" class="bg-gray-100 hover:bg-red-600 text-gray-600 hover:text-white px-3 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     </button>
                 </div>
@@ -123,18 +120,18 @@
                             <th class="py-4 px-6">Tanggal</th>
                             <th class="py-4 px-6">Bidang</th>
                             <th class="py-4 px-6">Jenis</th>
-                            <th class="py-4 px-6 rounded-tr-lg">Uraian / Keterangan</th>
+                            <th class="py-4 px-6">Uraian / Keterangan</th>
+                            <th class="py-4 px-6 w-16 text-center rounded-tr-lg">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="table-body" class="divide-y divide-indigo-50 bg-white">
-                        <tr><td colspan="6" class="py-8 text-center text-gray-400 font-medium">Memuat data kearsipan...</td></tr>
+                        <tr><td colspan="7" class="py-8 text-center text-gray-400 font-medium">Memuat data kearsipan...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </main>
 
-    <!-- Notification and Modal -->
     <div id="notification" class="fixed bottom-6 right-6 border-l-4 rounded shadow-xl p-4 hidden z-50 transform transition-all duration-300 translate-y-12 opacity-0 flex items-center gap-3">
         <div id="notif-icon"></div>
         <p id="notif-text" class="text-sm font-medium"></p>
@@ -218,13 +215,10 @@
         </div>
     </div>
 
-    <!-- Script tanpa Firebase (Pure LocalStorage) -->
-        <script type="module">
-        // 1. Import library Firebase versi 10
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // 2. PASTE FIREBASE CONFIG ANDA DI SINI
         const firebaseConfig = {
             apiKey: "AIzaSyD5Xf_CugY9KDNobVWH-xjRpML3_I8CP_o",
             authDomain: "sistem-kearsipan-surat.firebaseapp.com",
@@ -235,14 +229,11 @@
             measurementId: "G-ZKG42JS77B"
         };
 
-        // 3. Inisialisasi Firebase & Firestore
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        // Variabel global untuk menyimpan data sementara agar bisa difilter
         window.dataArsip = [];
 
-        // Fungsi Notifikasi (Sama seperti sebelumnya)
         window.showNotification = function(message, type = 'success') {
             const notif = document.getElementById('notification');
             const text = document.getElementById('notif-text');
@@ -262,7 +253,6 @@
             }, 3000);
         };
 
-        // Fungsi Render Tabel (Sama seperti sebelumnya)
         window.renderTable = function() {
             const body = document.getElementById('table-body');
             const search = (document.getElementById('search-bar').value || "").toLowerCase();
@@ -270,7 +260,7 @@
             
             body.innerHTML = '';
             if (filtered.length === 0) {
-                body.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-gray-500 font-medium">Tidak ada data arsip ditemukan.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-gray-500 font-medium">Tidak ada data arsip ditemukan.</td></tr>`;
             } else {
                 filtered.forEach((d, index) => {
                     const dateStr = d.tgl ? d.tgl.split('-').reverse().join('-') : '-';
@@ -296,11 +286,15 @@
                         <td class="py-4 px-6 font-semibold text-slate-700">${d.bidang}</td>
                         <td class="py-4 px-6"><span class="px-3 py-1.5 text-xs rounded-full border border-white/20 tracking-wide uppercase ${typeBadgeClass}">${d.jenis}</span></td>
                         <td class="py-4 px-6 font-medium text-slate-700 max-w-xs truncate" title="${d.uraian}">${d.uraian}</td>
+                        <td class="py-4 px-6 text-center">
+                            <button onclick="deleteSingleData('${d.id}')" title="Hapus Data Ini" class="text-gray-400 hover:text-red-600 p-1 rounded transition-colors">
+                                <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </td>
                     </tr>`;
                 });
             }
             
-            // Update Dashboard Statistik
             document.getElementById('stat-masuk').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Masuk').length;
             document.getElementById('stat-keluar').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Keluar').length;
             document.getElementById('stat-bast').innerText = window.dataArsip.filter(d => d.jenis === 'BAST').length;
@@ -309,47 +303,40 @@
             document.getElementById('stat-lain').innerText = window.dataArsip.filter(d => d.jenis === 'Lain lain').length;
         };
 
-        // 4. Fungsi Mengambil Data dari Firebase saat aplikasi dibuka
         async function loadDataFromFirebase() {
             try {
-                // Ambil koleksi "arsip_surat" dari Firestore dan urutkan berdasarkan waktu input
                 const q = query(collection(db, "arsip_surat"), orderBy("tgl_input", "asc"));
                 const querySnapshot = await getDocs(q);
                 
-                window.dataArsip = []; // Kosongkan array lokal
+                window.dataArsip = [];
                 querySnapshot.forEach((doc) => {
-                    // Masukkan data dari internet ke array lokal
                     window.dataArsip.push({ id: doc.id, ...doc.data() });
                 });
                 
-                window.renderTable(); // Tampilkan ke layar
+                window.renderTable();
             } catch (error) {
                 console.error("Error mengambil data:", error);
                 window.showNotification("Gagal memuat data dari internet!", "error");
             }
         }
 
-        // 5. Fungsi Simpan (Menulis ke Firebase)
         document.getElementById('form-surat').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btnSubmit = document.getElementById('btn-submit');
             btnSubmit.disabled = true;
-            btnSubmit.innerHTML = "Menyimpan..."; // Feedback visual
+            btnSubmit.innerHTML = "Menyimpan...";
             
             try {
-                // Tambahkan dokumen baru ke koleksi "arsip_surat" di Firestore
                 await addDoc(collection(db, "arsip_surat"), {
                     no: `${document.getElementById('kode').value}${document.getElementById('no_urut').value}`,
                     tgl: document.getElementById('tgl_surat').value,
                     bidang: document.getElementById('bidang').value,
                     jenis: document.getElementById('jenis').value,
                     uraian: document.getElementById('uraian').value,
-                    tgl_input: serverTimestamp() // Gunakan waktu server Firestore
+                    tgl_input: serverTimestamp()
                 });
                 
-                // Ambil ulang data terbaru setelah berhasil simpan
                 await loadDataFromFirebase();
-                
                 window.toggleModal(false);
                 e.target.reset();
                 window.showNotification("Arsip surat berhasil disimpan ke Cloud!");
@@ -362,10 +349,45 @@
             }
         });
 
-        // Fitur hapus data via tombol reset dimatikan agar data Cloud tidak mudah terhapus
-        window.resetData = function() {
-            window.showNotification("Fitur hapus massal dinonaktifkan demi keamanan Cloud.", "error");
-        }
+        // FUNGSI BARU: Hapus Data Tertentu/Satu Baris
+        window.deleteSingleData = async function(id) {
+            if (confirm("Apakah Anda yakin ingin menghapus surat ini dari database cloud?")) {
+                try {
+                    await deleteDoc(doc(db, "arsip_surat", id));
+                    window.showNotification("Data berhasil dihapus!");
+                    await loadDataFromFirebase();
+                } catch (error) {
+                    console.error("Error menghapus dokumen:", error);
+                    window.showNotification("Gagal menghapus data!", "error");
+                }
+            }
+        };
+
+        // FUNGSI BARU: Hapus Massal (Reset Semua Data di Firebase)
+        window.resetData = async function() {
+            if (window.dataArsip.length === 0) {
+                window.showNotification("Tidak ada data yang bisa dihapus.", "error");
+                return;
+            }
+
+            if (confirm("PERINGATAN: Anda akan menghapus SELURUH data kearsipan surat yang tersimpan di cloud secara permanen. Apakah Anda yakin?")) {
+                const konfirmasiLanjutan = confirm("Sekali lagi, data yang dihapus tidak bisa dikembalikan. Lanjutkan hapus massal?");
+                if (konfirmasiLanjutan) {
+                    window.showNotification("Sedang menghapus semua data...", "error");
+                    try {
+                        // Menghapus data di Firestore dilakukan dengan menghapus dokumen satu per satu
+                        const deletePromises = window.dataArsip.map(d => deleteDoc(doc(db, "arsip_surat", d.id)));
+                        await Promise.all(deletePromises);
+                        
+                        window.showNotification("Semua data kearsipan berhasil dibersihkan!");
+                        await loadDataFromFirebase();
+                    } catch (error) {
+                        console.error("Error saat hapus massal:", error);
+                        window.showNotification("Terjadi kesalahan saat menghapus data massal!", "error");
+                    }
+                }
+            }
+        };
 
         window.toggleModal = function(show) {
             const modal = document.getElementById('modal');
@@ -377,14 +399,12 @@
             else { modal.classList.add('hidden'); }
         }
 
-        // Penanda waktu dan jam
         setInterval(() => {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID', { hour12: false });
             document.getElementById('date-display').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
         }, 1000);
         
-        // PANGGIL FUNGSI LOAD DATA PERTAMA KALI SAAT HALAMAN DIBUKA
         loadDataFromFirebase();
     </script>
 </body>
