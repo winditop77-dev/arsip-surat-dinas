@@ -83,7 +83,7 @@
                 <h3 id="stat-bast" class="text-2xl font-black mt-2 drop-shadow">0</h3>
             </div>
             
-            <div class="bg-gradient-to-br from-fuchsia-400 via-purple-500 to-indigo-600 rounded-xl p-4 shadow-lg shadow-purple-500/20 text-white cursor-pointer transition transform hover:-translate-y-1" onclick="toggleModal(true)">
+            <div class="bg-gradient-to-br from-fuchsia-400 via-purple-500 to-indigo-600 rounded-xl p-4 shadow-lg shadow-purple-500/20 text-white transition transform hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <p class="text-[10px] font-semibold uppercase tracking-wider text-fuchsia-100">BAP</p>
                     <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
@@ -135,8 +135,9 @@
                             <th class="py-4 px-6">No. Surat</th>
                             <th class="py-4 px-6">Tanggal</th>
                             <th class="py-4 px-6">Bidang</th>
-                            <th class="py-4 px-6 text-center w-48">Jenis</th> <th class="py-4 px-6">Uraian / Keterangan</th>
-                            <th class="py-4 px-6 w-16 text-center rounded-tr-lg">Aksi</th>
+                            <th class="py-4 px-6 text-center w-48">Jenis</th>
+                            <th class="py-4 px-6">Uraian / Keterangan</th>
+                            <th class="py-4 px-6 w-24 text-center rounded-tr-lg">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="table-body" class="divide-y divide-indigo-50 bg-white">
@@ -155,12 +156,12 @@
     <div id="modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 transition-opacity">
         <div class="bg-white rounded-2xl p-6 md:p-8 max-w-lg w-full shadow-2xl transform scale-100 transition-transform border border-indigo-50">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Input Surat Baru</h2>
+                <h2 id="modal-title" class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Input Surat Baru</h2>
                 <button onclick="toggleModal(false)" class="text-gray-400 hover:text-gray-600 transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             
             <form id="form-surat" class="space-y-5">
-                <div class="grid grid-cols-2 gap-4">
+                <input type="hidden" id="edit-id"> <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Kode Klasifikasi</label>
                         <input type="text" id="kode" list="list-kode" value="B/800.1.11.1/" placeholder="Pilih atau ketik manual..." class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 bg-white">                     
@@ -232,7 +233,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD5Xf_CugY9KDNobVWH-xjRpML3_I8CP_o",
@@ -299,15 +300,16 @@
                         <td class="py-4 px-6 font-extrabold ${textAccentClass}">${d.no}</td>
                         <td class="py-4 px-6 font-semibold text-gray-600 whitespace-nowrap">${dateStr}</td>
                         <td class="py-4 px-6 font-semibold text-slate-700">${d.bidang}</td>
-                        
                         <td class="py-4 px-6 text-center">
                             <span class="inline-flex justify-center w-44 px-3 py-1.5 text-xs font-bold rounded-full border border-white/20 tracking-wide uppercase ${typeBadgeClass}">
                                 ${d.jenis}
                             </span>
                         </td>
-                        
                         <td class="py-4 px-6 font-medium text-slate-700 max-w-xs truncate" title="${d.uraian}">${d.uraian}</td>
-                        <td class="py-4 px-6 text-center">
+                        <td class="py-4 px-6 text-center flex justify-center gap-2 items-center">
+                            <button onclick="toggleModal(true, '${d.id}')" title="Edit Data Ini" class="text-gray-400 hover:text-indigo-600 p-1 rounded transition-colors">
+                                <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            </button>
                             <button onclick="deleteSingleData('${d.id}')" title="Hapus Data Ini" class="text-gray-400 hover:text-red-600 p-1 rounded transition-colors">
                                 <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
@@ -316,13 +318,12 @@
                 });
             }
             
-            // Statistik terhitung dengan aman karena elemen HTML penampungnya sudah tersedia
             document.getElementById('stat-masuk').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Masuk').length;
             document.getElementById('stat-keluar').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Keluar').length;
             document.getElementById('stat-tugas').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Perintah/Tugas').length;
             document.getElementById('stat-spj').innerText = window.dataArsip.filter(d => d.jenis === 'SPJ').length;
             document.getElementById('stat-bast').innerText = window.dataArsip.filter(d => d.jenis === 'BAST').length;
-            document.getElementById('stat-bap').innerText = window.dataArsip.filter(d => d.jenis === 'BAP' || (d.jenis && d.jenis.includes('Cuti'))).length;
+            document.getElementById('stat-bap').innerText = window.dataArsip.filter(d => d.jenis === 'BAP').length;
             document.getElementById('stat-undangan').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Undangan').length;
             document.getElementById('stat-lain').innerText = window.dataArsip.filter(d => d.jenis === 'Lain lain').length;
         };
@@ -347,23 +348,33 @@
         document.getElementById('form-surat').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btnSubmit = document.getElementById('btn-submit');
+            const editId = document.getElementById('edit-id').value;
             btnSubmit.disabled = true;
             btnSubmit.innerHTML = "Menyimpan...";
             
+            const payload = {
+                no: `${document.getElementById('kode').value}${document.getElementById('no_urut').value}`,
+                tgl: document.getElementById('tgl_surat').value,
+                bidang: document.getElementById('bidang').value,
+                jenis: document.getElementById('jenis').value,
+                uraian: document.getElementById('uraian').value,
+                tgl_input: serverTimestamp()
+            };
+
             try {
-                await addDoc(collection(db, "arsip_surat"), {
-                    no: `${document.getElementById('kode').value}${document.getElementById('no_urut').value}`,
-                    tgl: document.getElementById('tgl_surat').value,
-                    bidang: document.getElementById('bidang').value,
-                    jenis: document.getElementById('jenis').value,
-                    uraian: document.getElementById('uraian').value,
-                    tgl_input: serverTimestamp()
-                });
+                if (editId) {
+                    // JIKA MODE EDIT: Update dokumen yang ada
+                    await updateDoc(doc(db, "arsip_surat", editId), payload);
+                    window.showNotification("Arsip surat berhasil diperbarui!");
+                } else {
+                    // JIKA MODE BARU: Tambah dokumen baru
+                    await addDoc(collection(db, "arsip_surat"), payload);
+                    window.showNotification("Arsip surat berhasil disimpan ke Cloud!");
+                }
                 
                 await loadDataFromFirebase();
                 window.toggleModal(false);
                 e.target.reset();
-                window.showNotification("Arsip surat berhasil disimpan ke Cloud!");
             } catch (error) {
                 console.error("Error saat menyimpan:", error);
                 window.showNotification("Gagal menyimpan data!", "error");
@@ -410,14 +421,49 @@
             }
         };
 
-        window.toggleModal = function(show) {
+        // MODIFIKASI FUNGSI: Mengakomodasi pengisian data otomatis jika klik tombol Edit
+        window.toggleModal = function(show, id = null) {
             const modal = document.getElementById('modal');
+            const form = document.getElementById('form-surat');
+            const title = document.getElementById('modal-title');
+            
             if(show) { 
                 modal.classList.remove('hidden'); 
-                document.getElementById('tgl_surat').valueAsDate = new Date(); 
-                document.getElementById('no_urut').value = (window.dataArsip.length + 1).toString().padStart(3, '0'); 
+                if (id) {
+                    // Jika ada ID -> Masuk Mode Edit
+                    title.innerText = "Edit Data Surat";
+                    const dataTua = window.dataArsip.find(d => d.id === id);
+                    if (dataTua) {
+                        document.getElementById('edit-id').value = id;
+                        document.getElementById('tgl_surat').value = dataTua.tgl;
+                        document.getElementById('bidang').value = dataTua.bidang;
+                        document.getElementById('jenis').value = dataTua.jenis;
+                        document.getElementById('uraian').value = dataTua.uraian;
+                        
+                        // Memisahkan nomor surat kembali ke input kode & urut
+                        // Mengambil string setelah '/' terakhir sebagai nomor urut
+                        const lastSlashIndex = dataTua.no.lastIndexOf('/');
+                        if (lastSlashIndex !== -1) {
+                            document.getElementById('kode').value = dataTua.no.substring(0, lastSlashIndex + 1);
+                            document.getElementById('no_urut').value = dataTua.no.substring(lastSlashIndex + 1);
+                        } else {
+                            document.getElementById('kode').value = "";
+                            document.getElementById('no_urut').value = dataTua.no;
+                        }
+                    }
+                } else {
+                    // Jika tidak ada ID -> Masuk Mode Tambah Baru
+                    title.innerText = "Input Surat Baru";
+                    form.reset();
+                    document.getElementById('edit-id').value = "";
+                    document.getElementById('kode').value = "B/800.1.11.1/";
+                    document.getElementById('tgl_surat').valueAsDate = new Date(); 
+                    document.getElementById('no_urut').value = (window.dataArsip.length + 1).toString().padStart(3, '0'); 
+                }
             }
-            else { modal.classList.add('hidden'); }
+            else { 
+                modal.classList.add('hidden'); 
+            }
         }
 
         setInterval(() => {
