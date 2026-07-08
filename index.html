@@ -135,8 +135,7 @@
                             <th class="py-4 px-6">No. Surat</th>
                             <th class="py-4 px-6">Tanggal</th>
                             <th class="py-4 px-6">Bidang</th>
-                            <th class="py-4 px-6">Jenis</th>
-                            <th class="py-4 px-6">Uraian / Keterangan</th>
+                            <th class="py-4 px-6 text-center w-48">Jenis</th> <th class="py-4 px-6">Uraian / Keterangan</th>
                             <th class="py-4 px-6 w-24 text-center rounded-tr-lg">Aksi</th>
                         </tr>
                     </thead>
@@ -302,7 +301,13 @@
                         <td class="py-4 px-6 font-extrabold ${textAccentClass}">${d.no}</td>
                         <td class="py-4 px-6 font-semibold text-gray-600 whitespace-nowrap">${dateStr}</td>
                         <td class="py-4 px-6 font-semibold text-slate-700">${d.bidang}</td>
-                        <td class="py-4 px-6"><span class="px-3 py-1.5 text-xs rounded-full border border-white/20 tracking-wide uppercase ${typeBadgeClass}">${d.jenis}</span></td>
+                        
+                        <td class="py-4 px-6 text-center">
+                            <span class="inline-flex justify-center w-44 px-3 py-1.5 text-xs font-bold rounded-full border border-white/20 tracking-wide uppercase ${typeBadgeClass}">
+                                ${d.jenis}
+                            </span>
+                        </td>
+                        
                         <td class="py-4 px-6 font-medium text-slate-700 max-w-xs truncate" title="${d.uraian}">${d.uraian}</td>
                         <td class="py-4 px-6 text-center">
                             <div class="flex items-center justify-center gap-2">
@@ -310,180 +315,4 @@
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 </button>
                                 <button onclick="deleteSingleData('${d.id}')" title="Hapus Data Ini" class="text-gray-400 hover:text-red-600 p-1 rounded transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>`;
-                });
-            }
-            
-            document.getElementById('stat-masuk').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Masuk').length;
-            document.getElementById('stat-keluar').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Keluar').length;
-            document.getElementById('stat-tugas').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Perintah/Tugas').length;
-            document.getElementById('stat-spj').innerText = window.dataArsip.filter(d => d.jenis === 'SPJ').length;
-            document.getElementById('stat-bast').innerText = window.dataArsip.filter(d => d.jenis === 'BAST').length;
-            document.getElementById('stat-bap').innerText = window.dataArsip.filter(d => d.jenis === 'BAP' || (d.jenis && d.jenis.includes('Cuti'))).length;
-            document.getElementById('stat-undangan').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Undangan').length;
-            document.getElementById('stat-lain').innerText = window.dataArsip.filter(d => d.jenis === 'Lain lain').length;
-        };
-
-        async function loadDataFromFirebase() {
-            try {
-                const q = query(collection(db, "arsip_surat"), orderBy("tgl_input", "asc"));
-                const querySnapshot = await getDocs(q);
-                
-                window.dataArsip = [];
-                querySnapshot.forEach((doc) => {
-                    window.dataArsip.push({ id: doc.id, ...doc.data() });
-                });
-                
-                window.renderTable();
-            } catch (error) {
-                console.error("Error mengambil data:", error);
-                window.showNotification("Gagal memuat data dari internet!", "error");
-            }
-        }
-
-        document.getElementById('form-surat').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btnSubmit = document.getElementById('btn-submit');
-            const editId = document.getElementById('edit-id').value;
-            btnSubmit.disabled = true;
-            btnSubmit.innerHTML = "Memproses...";
-            
-            const nomorLengkap = `${document.getElementById('kode').value}${document.getElementById('no_urut').value}`;
-            const dataPayload = {
-                no: nomorLengkap,
-                tgl: document.getElementById('tgl_surat').value,
-                bidang: document.getElementById('bidang').value,
-                jenis: document.getElementById('jenis').value,
-                uraian: document.getElementById('uraian').value
-            };
-
-            try {
-                if (editId) {
-                    // JALUR UPDATE/EDIT DATA EXISTING
-                    const docRef = doc(db, "arsip_surat", editId);
-                    await updateDoc(docRef, dataPayload);
-                    window.showNotification("Perubahan nomor klasifikasi/data berhasil diperbarui!");
-                } else {
-                    // JALUR TAMBAH DATA BARU
-                    dataPayload.tgl_input = serverTimestamp();
-                    await addDoc(collection(db, "arsip_surat"), dataPayload);
-                    window.showNotification("Arsip surat berhasil disimpan ke Cloud!");
-                }
-                
-                await loadDataFromFirebase();
-                window.toggleModal(false);
-                e.target.reset();
-            } catch (error) {
-                console.error("Error pemrosesan database:", error);
-                window.showNotification("Gagal memproses data kearsipan!", "error");
-            } finally {
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = "<span>Simpan Data</span>";
-            }
-        });
-
-        window.openAddModal = function() {
-            document.getElementById('form-surat').reset();
-            document.getElementById('edit-id').value = "";
-            document.getElementById('modal-title').innerText = "Input Surat Baru";
-            window.toggleModal(true);
-        };
-
-        window.openEditModal = function(id) {
-            const data = window.dataArsip.find(d => d.id === id);
-            if (!data) return;
-
-            document.getElementById('edit-id').value = id;
-            document.getElementById('modal-title').innerText = "Edit Klasifikasi Berkas";
-            
-            // Logika pemecahan nomor surat kembali menjadi Kode Klasifikasi & No Urut
-            let kodeValue = "B/800.1.11.1/";
-            let noUrutValue = "";
-            
-            const listOpsi = Array.from(document.querySelectorAll('#list-kode option')).map(o => o.value);
-            // Cari kecocokan kode terpanjang terlebih dahulu agar akurat
-            const matchKode = listOpsi.sort((a,b) => b.length - a.length).find(k => data.no.startsWith(k));
-            
-            if (matchKode) {
-                kodeValue = matchKode;
-                noUrutValue = data.no.substring(matchKode.length);
-            } else {
-                noUrutValue = data.no;
-            }
-
-            document.getElementById('kode').value = kodeValue;
-            document.getElementById('no_urut').value = noUrutValue;
-            document.getElementById('tgl_surat').value = data.tgl || "";
-            document.getElementById('bidang').value = data.bidang || "Sekretariat";
-            document.getElementById('jenis').value = data.jenis || "Surat Masuk";
-            document.getElementById('uraian').value = data.uraian || "";
-
-            // Buka Modal tanpa overwrite data default counter nomor urut otomatis
-            const modal = document.getElementById('modal');
-            modal.classList.remove('hidden');
-        };
-
-        window.deleteSingleData = async function(id) {
-            if (confirm("Apakah Anda yakin ingin menghapus surat ini dari database cloud?")) {
-                try {
-                    await deleteDoc(doc(db, "arsip_surat", id));
-                    window.showNotification("Data berhasil dihapus!");
-                    await loadDataFromFirebase();
-                } catch (error) {
-                    console.error("Error menghapus dokumen:", error);
-                    window.showNotification("Gagal menghapus data!", "error");
-                }
-            }
-        };
-
-        window.resetData = async function() {
-            if (window.dataArsip.length === 0) {
-                window.showNotification("Tidak ada data yang bisa dihapus.", "error");
-                return;
-            }
-
-            if (confirm("PERINGATAN: Anda akan menghapus SELURUH data kearsipan surat yang tersimpan di cloud secara permanen. Apakah Anda yakin?")) {
-                const konfirmasiLanjutan = confirm("Sekali lagi, data yang dihapus tidak bisa dikembalikan. Lanjutkan hapus massal?");
-                if (konfirmasiLanjutan) {
-                    window.showNotification("Sedang menghapus semua data...", "error");
-                    try {
-                        const deletePromises = window.dataArsip.map(d => deleteDoc(doc(db, "arsip_surat", d.id)));
-                        await Promise.all(deletePromises);
-                        
-                        window.showNotification("Semua data kearsipan berhasil dibersihkan!");
-                        await loadDataFromFirebase();
-                    } catch (error) {
-                        console.error("Error saat hapus massal:", error);
-                        window.showNotification("Terjadi kesalahan saat menghapus data massal!", "error");
-                    }
-                }
-            }
-        };
-
-        window.toggleModal = function(show) {
-            const modal = document.getElementById('modal');
-            if(show) { 
-                modal.classList.remove('hidden'); 
-                // Hanya set otomatis jika ini mode Tambah Baru (bukan mode Edit)
-                if(!document.getElementById('edit-id').value) {
-                    document.getElementById('tgl_surat').valueAsDate = new Date(); 
-                    document.getElementById('no_urut').value = (window.dataArsip.length + 1).toString().padStart(3, '0'); 
-                }
-            }
-            else { modal.classList.add('hidden'); }
-        }
-
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID', { hour12: false });
-            document.getElementById('date-display').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
-        }, 1000);
-        
-        loadDataFromFirebase();
-    </script>
-</body>
-</html>
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16
