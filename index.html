@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -43,7 +42,7 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 mb-8">
             <div class="bg-gradient-to-br from-blue-400 via-blue-500 to-sky-600 rounded-xl p-4 shadow-lg shadow-blue-500/20 text-white transition transform hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <p class="text-[10px] font-semibold uppercase tracking-wider text-blue-100">Surat Masuk</p>
@@ -58,6 +57,22 @@
                     <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg></div>
                 </div>
                 <h3 id="stat-keluar" class="text-2xl font-black mt-2 drop-shadow">0</h3>
+            </div>
+
+            <div class="bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-600 rounded-xl p-4 shadow-lg shadow-cyan-500/20 text-white transition transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-semibold uppercase tracking-wider text-cyan-100">Surat Tugas</p>
+                    <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg></div>
+                </div>
+                <h3 id="stat-tugas" class="text-2xl font-black mt-2 drop-shadow">0</h3>
+            </div>
+
+            <div class="bg-gradient-to-br from-slate-500 via-slate-600 to-zinc-700 rounded-xl p-4 shadow-lg shadow-slate-600/20 text-white transition transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-200">SPJ</p>
+                    <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg></div>
+                </div>
+                <h3 id="stat-spj" class="text-2xl font-black mt-2 drop-shadow">0</h3>
             </div>
             
             <div class="bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-600 rounded-xl p-4 shadow-lg shadow-emerald-500/20 text-white transition transform hover:-translate-y-1">
@@ -296,8 +311,11 @@
                 });
             }
             
+            // Sinkronisasi data hitungan bento box statistik (termasuk Surat Tugas & SPJ)
             document.getElementById('stat-masuk').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Masuk').length;
             document.getElementById('stat-keluar').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Keluar').length;
+            document.getElementById('stat-tugas').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Perintah/Tugas').length;
+            document.getElementById('stat-spj').innerText = window.dataArsip.filter(d => d.jenis === 'SPJ').length;
             document.getElementById('stat-bast').innerText = window.dataArsip.filter(d => d.jenis === 'BAST').length;
             document.getElementById('stat-bap').innerText = window.dataArsip.filter(d => d.jenis === 'BAP' || (d.jenis && d.jenis.includes('Cuti'))).length;
             document.getElementById('stat-undangan').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Undangan').length;
@@ -350,7 +368,6 @@
             }
         });
 
-        // FUNGSI BARU: Hapus Data Tertentu/Satu Baris
         window.deleteSingleData = async function(id) {
             if (confirm("Apakah Anda yakin ingin menghapus surat ini dari database cloud?")) {
                 try {
@@ -364,7 +381,6 @@
             }
         };
 
-        // FUNGSI BARU: Hapus Massal (Reset Semua Data di Firebase)
         window.resetData = async function() {
             if (window.dataArsip.length === 0) {
                 window.showNotification("Tidak ada data yang bisa dihapus.", "error");
@@ -376,7 +392,6 @@
                 if (konfirmasiLanjutan) {
                     window.showNotification("Sedang menghapus semua data...", "error");
                     try {
-                        // Menghapus data di Firestore dilakukan dengan menghapus dokumen satu per satu
                         const deletePromises = window.dataArsip.map(d => deleteDoc(doc(db, "arsip_surat", d.id)));
                         await Promise.all(deletePromises);
                         
