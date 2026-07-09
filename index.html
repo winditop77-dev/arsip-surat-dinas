@@ -170,18 +170,31 @@
         <p id="notif-text" class="text-sm font-medium"></p>
     </div>
 
-    <div id="modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 transition-opacity">
-        <div class="bg-white rounded-2xl p-6 md:p-8 max-w-lg w-full shadow-2xl transform scale-100 transition-transform border border-indigo-50">
-            <div class="flex justify-between items-center mb-6">
-                <h2 id="modal-title" class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Input Surat Baru</h2>
-                <button onclick="toggleModal(false)" class="text-gray-400 hover:text-gray-600 transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+    <div id="modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4 transition-opacity">
+        
+        <div class="relative rounded-2xl p-6 md:p-8 max-w-lg w-full shadow-2xl transform scale-100 transition-transform border border-indigo-500/30 ring-1 ring-white/10 overflow-hidden"
+             style="
+                background-image: 
+                    linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 27, 75, 0.93) 50%, rgba(15, 23, 42, 0.95) 100%), 
+                    url('—Pngtree—floral batik seamless pattern_16198429.jpg');
+                background-size: cover;
+                background-position: center;
+             ">
+            
+            <div class="flex justify-between items-center mb-6 border-b border-indigo-500/20 pb-4 relative z-10">
+                <h2 id="modal-title" class="text-xl font-extrabold bg-gradient-to-r from-amber-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">Input Surat Baru</h2>
+                <button onclick="toggleModal(false)" class="text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
             </div>
             
-            <form id="form-surat" class="space-y-5">
-                <input type="hidden" id="edit-id"> <div class="grid grid-cols-2 gap-4">
+            <form id="form-surat" class="space-y-5 relative z-10">
+                <input type="hidden" id="edit-id"> 
+                
+                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Kode Klasifikasi</label>
-                        <input type="text" id="kode" list="list-kode" value="B/800.1.11.1/" placeholder="Pilih atau ketik manual..." class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 bg-white">                     
+                        <label class="block text-xs font-bold text-indigo-200 uppercase tracking-wider mb-1.5">Kode Klasifikasi</label>
+                        <input type="text" id="kode" list="list-kode" value="B/800.1.11.1/" placeholder="Pilih/ketik..." class="w-full px-3 py-2.5 bg-slate-900/70 backdrop-blur-sm border border-indigo-500/40 rounded-lg text-white placeholder-slate-400 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all font-medium">                     
                         <datalist id="list-kode">
                             <option value="B/">
                             <option value="B/800.1.11.1/">
@@ -199,20 +212,20 @@
                         </datalist>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">No. Urut</label>
-                        <input type="text" id="no_urut" required placeholder="Contoh: 001" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 bg-white font-mono">
+                        <label class="block text-xs font-bold text-indigo-200 uppercase tracking-wider mb-1.5">No. Urut</label>
+                        <input type="text" id="no_urut" required placeholder="Contoh: 001" class="w-full px-3 py-2.5 bg-slate-900/70 backdrop-blur-sm border border-indigo-500/40 rounded-lg text-white placeholder-slate-400 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all font-mono font-bold">
                     </div>
                 </div>
                 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Tanggal Surat</label>
-                    <input type="date" id="tgl_surat" required class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200">
+                    <label class="block text-xs font-bold text-indigo-200 uppercase tracking-wider mb-1.5">Tanggal Surat</label>
+                    <input type="date" id="tgl_surat" required class="w-full px-3 py-2.5 bg-slate-900/70 backdrop-blur-sm border border-indigo-500/40 rounded-lg text-white outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all font-medium color-scheme-dark">
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Bidang / Unit</label>
-                        <select id="bidang" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 bg-white">
+                        <label class="block text-xs font-bold text-indigo-200 uppercase tracking-wider mb-1.5">Bidang / Unit</label>
+                        <select id="bidang" class="w-full px-3 py-2.5 bg-slate-900/70 backdrop-blur-sm border border-indigo-500/40 rounded-lg text-white outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all font-medium [&>option]:bg-slate-950">
                             <option value="Sekretariat">Sekretariat</option>
                             <option value="Bid SD">Bidang SD</option>
                             <option value="SMP">Bidang SMP</option>
@@ -221,8 +234,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Jenis Surat</label>
-                        <select id="jenis" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 bg-white">
+                        <label class="block text-xs font-bold text-indigo-200 uppercase tracking-wider mb-1.5">Jenis Surat</label>
+                        <select id="jenis" class="w-full px-3 py-2.5 bg-slate-900/70 backdrop-blur-sm border border-indigo-500/40 rounded-lg text-white outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all font-medium [&>option]:bg-slate-950">
                             <option value="Surat Masuk">Surat Masuk</option>
                             <option value="Surat Keluar">Surat Keluar</option>
                             <option value="Surat Perintah/Tugas">Surat Perintah/Tugas</option>
@@ -236,13 +249,15 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Uraian / Keterangan</label>
-                    <textarea id="uraian" placeholder="Tuliskan perihal atau uraian singkat dokumen..." required rows="3" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 resize-none"></textarea>
+                    <label class="block text-xs font-bold text-indigo-200 uppercase tracking-wider mb-1.5">Uraian / Keterangan</label>
+                    <textarea id="uraian" placeholder="Tuliskan perihal atau uraian singkat dokumen..." required rows="3" class="w-full px-3 py-2.5 bg-slate-900/70 backdrop-blur-sm border border-indigo-500/40 rounded-lg text-white placeholder-slate-400 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all resize-none font-medium"></textarea>
                 </div>
                 
-                <div class="flex gap-3 pt-2">
-                    <button type="button" onclick="toggleModal(false)" class="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">Batal</button>
-                    <button type="submit" id="btn-submit" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-semibold transition-colors flex justify-center items-center gap-2 shadow-md"><span>Simpan Data</span></button>
+                <div class="flex gap-3 pt-4 border-t border-indigo-500/20">
+                    <button type="button" onclick="toggleModal(false)" class="flex-1 px-4 py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg font-medium transition-colors border border-slate-700 backdrop-blur-sm">Batal</button>
+                    <button type="submit" id="btn-submit" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-600 hover:opacity-95 text-white rounded-lg font-bold transition-all flex justify-center items-center gap-2 shadow-lg shadow-purple-900/40 hover:scale-[1.02]">
+                        <span>Simpan Data</span>
+                    </button>
                 </div>
             </form>
         </div>
