@@ -9,13 +9,26 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&display=swap');
         body { 
             font-family: 'Inter', sans-serif; 
-            background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 50%, #fdf2f8 100%); 
+            /* Gradien lembut sebagai dasar */
+            background-color: #f8fafc;
+            background-image: 
+                linear-gradient(135deg, rgba(239, 246, 255, 0.5) 0%, rgba(240, 253, 244, 0.5) 50%, rgba(253, 242, 248, 0.5) 100%),
+                /* Pola titik-titik mikro */
+                radial-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 100% 100%, 20px 20px;
+            background-attachment: fixed;
         }
         
         .custom-scrollbar::-webkit-scrollbar { height: 8px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; border-radius: 4px; }
+
+        /* Tambahan sedikit perbaikan keterbacaan untuk card putih */
+        main .bg-white.rounded-2xl {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.9);
+        }
     </style>
 </head>
 <body class="text-gray-800 flex flex-col min-h-screen">
