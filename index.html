@@ -37,41 +37,24 @@
 </head>
 <body class="text-gray-800 flex flex-col min-h-screen">
 
-    <!-- HEADER DENGAN BACKGROUND BATIK PREMIUM & LOGO LOKAL BARU -->
-    <header class="border-b border-amber-500/30 sticky top-0 z-30 shadow-md relative overflow-hidden" 
-            style="
-                background-image: 
-                    linear-gradient(to right, rgba(15, 23, 42, 0.95) 0%, rgba(30, 27, 75, 0.9) 60%, rgba(15, 23, 42, 0.95) 100%), 
-                    url('—Pngtree—floral batik seamless pattern_16198429.jpg');
-                background-size: auto 300px;
-                background-repeat: repeat-x;
-                background-position: center;
-            ">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4 relative z-10">
+    <header class="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-3">
-                
-                <!-- WADAH LOGO BULAT PUTIH (MENGGUNAKAN FILE PNG BARU ANDA) -->
-                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center p-1.5 shadow-lg shadow-amber-500/20 overflow-hidden border border-amber-500/20 flex-shrink-0">
-                    <img src="logo_dinas_pendidikan.png" 
-                         alt="Logo Dinas Pendidikan" 
-                         class="w-full h-full object-contain scale-105">
+                <!-- Logo Tut Wuri Handayani -->
+                <div class="w-10 h-10 flex items-center justify-center shadow-sm rounded-lg overflow-hidden bg-transparent">
+                    <img src="https://akcdn.detik.net.id/visual/2023/01/19/logo-tut-wuri-handayani_169.jpeg?w=1200" alt="Logo Tut Wuri Handayani" class="w-full h-full object-contain">
                 </div>
-
                 <div>
-                    <!-- Judul menggunakan gradasi warna emas ke putih -->
-                    <h1 class="text-lg font-black bg-gradient-to-r from-amber-300 via-amber-100 to-white bg-clip-text text-transparent leading-tight tracking-wide">Sistem Kearsipan Surat</h1>
-                    <p class="text-xs text-amber-400 font-bold uppercase tracking-widest leading-normal">Dinas Pendidikan</p>
-                    <!-- Detail Alamat -->
-                    <p class="text-[10px] text-amber-200/80 font-medium tracking-wide mt-0.5">JL. D.I. Panjaitan Nomor 7 Surakarta</p>
+                    <h1 class="text-lg font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">Sistem Kearsipan Surat</h1>
+                    <p class="text-xs text-indigo-500 font-bold uppercase tracking-wide">Dinas Pendidikan</p>
                 </div>
             </div>
             
             <div class="flex items-center gap-2">
-                <!-- Tampilan Tanggal & Jam -->
-                <div id="date-display" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold text-amber-300 bg-amber-500/10 border border-amber-500/30 backdrop-blur-sm shadow-inner">
+                <div id="date-display" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold text-rose-600 bg-rose-50 border border-rose-100 shadow-sm">
                     --/--/----
                 </div>
-                <div id="clock" class="text-sm font-mono font-bold text-amber-400 bg-slate-950/60 px-4 py-2 rounded-lg border border-amber-500/20 backdrop-blur-sm shadow-inner">
+                <div id="clock" class="text-sm font-mono font-bold text-indigo-700 bg-indigo-50 px-4 py-2 rounded-lg border border-indigo-100 shadow-sm">
                     --:--:--
                 </div>
             </div>
