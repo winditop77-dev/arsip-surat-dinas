@@ -9,13 +9,17 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&display=swap');
         body { 
             font-family: 'Inter', sans-serif; 
-            /* Gradien lembut sebagai dasar */
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
+            /* Pola garis geometris tipis */
             background-image: 
-                linear-gradient(135deg, rgba(239, 246, 255, 0.5) 0%, rgba(240, 253, 244, 0.5) 50%, rgba(253, 242, 248, 0.5) 100%),
-                /* Pola titik-titik mikro */
-                radial-gradient(#e2e8f0 1px, transparent 1px);
-            background-size: 100% 100%, 20px 20px;
+                linear-gradient(30deg, #e2e8f0 12%, transparent 12.5%, transparent 87%, #e2e8f0 87.5%, #e2e8f0),
+                linear-gradient(150deg, #e2e8f0 12%, transparent 12.5%, transparent 87%, #e2e8f0 87.5%, #e2e8f0),
+                linear-gradient(30deg, #e2e8f0 12%, transparent 12.5%, transparent 87%, #e2e8f0 87.5%, #e2e8f0),
+                linear-gradient(150deg, #e2e8f0 12%, transparent 12.5%, transparent 87%, #e2e8f0 87.5%, #e2e8f0),
+                linear-gradient(60deg, #e2e8f0 25%, transparent 25.5%, transparent 75%, #e2e8f0 75%, #e2e8f0),
+                linear-gradient(60deg, #e2e8f0 25%, transparent 25.5%, transparent 75%, #e2e8f0 75%, #e2e8f0);
+            background-size: 40px 70px;
+            background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;
             background-attachment: fixed;
         }
         
@@ -23,11 +27,11 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; border-radius: 4px; }
-
-        /* Tambahan sedikit perbaikan keterbacaan untuk card putih */
-        main .bg-white.rounded-2xl {
-            backdrop-filter: blur(10px);
-            background-color: rgba(255, 255, 255, 0.9);
+        
+        /* Pastikan konten utama memiliki latar belakang solid agar pola tidak mengganggu */
+        main > div {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
         }
     </style>
 </head>
