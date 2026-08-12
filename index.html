@@ -171,6 +171,11 @@
                     </tbody>
                 </table>
             </div>
+            <div id="load-more-container" class="text-center mt-6" style="display: none;">
+                <button onclick="loadMoreData()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-lg shadow transition-all text-sm">
+                    Muat Lebih Banyak Data...
+                </button>
+            </div>
         </div>
     </main>
 
@@ -283,7 +288,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, limit, startAfter, getDocs, serverTimestamp, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD5Xf_CugY9KDNobVWH-xjRpML3_I8CP_o",
@@ -299,19 +304,8 @@
         const db = getFirestore(app);
         
         window.dataArsip = [];
-
-        // Inisialisasi Real-time Listener (Menggantikan loadDataFromFirebase)
-        const q = query(collection(db, "arsip_surat"), orderBy("tgl_input", "asc"));
-        onSnapshot(q, (snapshot) => {
-            window.dataArsip = [];
-            snapshot.forEach((doc) => {
-                window.dataArsip.push({ id: doc.id, ...doc.data() });
-            });
-            window.renderTable();
-        }, (error) => {
-            console.error("Error Real-time:", error);
-            window.showNotification("Gagal sinkronisasi data!", "error");
-        });
+        let lastVisibleDoc = null; // Menyimpan penanda dokumen terakhir untuk pagination
+        const pageSize = 20;     // Jumlah data yang dimuat per sekali muat
 
         window.showNotification = function(message, type = 'success') {
             const notif = document.getElementById('notification');
@@ -330,6 +324,57 @@
                 notif.classList.add('translate-y-12', 'opacity-0');
                 setTimeout(() => notif.classList.add('hidden'), 300);
             }, 3000);
+        };
+
+        // Fungsi Ambil Data dengan Paginasi (Load Initial & Load More)
+        async function loadDataFromFirebase(isLoadMore = false) {
+            try {
+                let q;
+                if (isLoadMore && lastVisibleDoc) {
+                    q = query(collection(db, "arsip_surat"), orderBy("tgl_input", "desc"), startAfter(lastVisibleDoc), limit(pageSize));
+                } else {
+                    q = query(collection(db, "arsip_surat"), orderBy("tgl_input", "desc"), limit(pageSize));
+                }
+
+                const querySnapshot = await getDocs(q);
+                
+                if (!isLoadMore) {
+                    window.dataArsip = []; // Reset jika muat ulang dari awal
+                }
+
+                if (querySnapshot.empty) {
+                    if (isLoadMore) window.showNotification("Semua data arsip sudah ditampilkan.", "error");
+                    document.getElementById('load-more-container').style.display = 'none';
+                    return;
+                }
+
+                lastVisibleDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+
+                querySnapshot.forEach((doc) => {
+                    // Hindari duplikasi data jika sudah ada di state lokal
+                    if (!window.dataArsip.some(item => item.id === doc.id)) {
+                        window.dataArsip.push({ id: doc.id, ...doc.data() });
+                    }
+                });
+
+                window.renderTable();
+
+                // Sembunyikan tombol jika data yang dikembalikan kurang dari batas halaman
+                if (querySnapshot.docs.length < pageSize) {
+                    document.getElementById('load-more-container').style.display = 'none';
+                } else {
+                    document.getElementById('load-more-container').style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error("Error mengambil data:", error);
+                window.showNotification("Gagal memuat data dari internet!", "error");
+            }
+        }
+
+        // Fungsi Global untuk Tombol Muat Lebih Banyak di HTML
+        window.loadMoreData = function() {
+            loadDataFromFirebase(true);
         };
 
         window.renderTable = function() {
@@ -415,6 +460,8 @@
                     await addDoc(collection(db, "arsip_surat"), payload);
                     window.showNotification("Arsip surat berhasil disimpan ke Cloud!");
                 }
+                
+                await loadDataFromFirebase(false);
                 window.toggleModal(false);
                 e.target.reset();
             } catch (error) {
@@ -431,6 +478,7 @@
                 try {
                     await deleteDoc(doc(db, "arsip_surat", id));
                     window.showNotification("Data berhasil dihapus!");
+                    await loadDataFromFirebase(false);
                 } catch (error) {
                     console.error("Error menghapus dokumen:", error);
                     window.showNotification("Gagal menghapus data!", "error");
@@ -445,12 +493,15 @@
             }
 
             if (confirm("PERINGATAN: Anda akan menghapus SELURUH data kearsipan surat yang tersimpan di cloud secara permanen. Apakah Anda yakin?")) {
-                if (confirm("Sekali lagi, data yang dihapus tidak bisa dikembalikan. Lanjutkan hapus massal?")) {
+                const konfirmasiLanjutan = confirm("Sekali lagi, data yang dihapus tidak bisa dikembalikan. Lanjutkan hapus massal?");
+                if (konfirmasiLanjutan) {
                     window.showNotification("Sedang menghapus semua data...", "error");
                     try {
                         const deletePromises = window.dataArsip.map(d => deleteDoc(doc(db, "arsip_surat", d.id)));
                         await Promise.all(deletePromises);
+                        
                         window.showNotification("Semua data kearsipan berhasil dibersihkan!");
+                        await loadDataFromFirebase(false);
                     } catch (error) {
                         console.error("Error saat hapus massal:", error);
                         window.showNotification("Terjadi kesalahan saat menghapus data massal!", "error");
@@ -504,9 +555,33 @@
             document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID', { hour12: false });
             document.getElementById('date-display').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
         }, 1000);
+        
+        loadDataFromFirebase(false);
     </script>
 </body>
-</html>      
+</html>       
+            
+            
+
+        
+                
+            
+                    
+                  
+           
+       
+            
+            
+          
+      
+            
+          
+        
+                 
+               
+
+        
+   
         
         
                 
