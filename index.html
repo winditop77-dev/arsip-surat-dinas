@@ -314,7 +314,17 @@
         
         window.dataArsip = [];
         let lastVisibleDoc = null; // Menyimpan penanda dokumen terakhir untuk pagination
-        const pageSize = 20;     // Jumlah data yang dimuat per sekali muat
+        let pageSize = 20;     // Jumlah data yang dimuat per sekali muat
+        
+        window.changePageSize = async function(newSize) {
+            pageSize = parseInt(newSize);
+            console.log("Page size diubah menjadi:", pageSize);
+            
+            lastVisibleDoc = null;
+            window.dataArsip = []; 
+            await loadDataFromFirebase(false); 
+            window.showNotification(`Menampilkan ${pageSize} data per halaman.`);
+        };
 
         window.showNotification = function(message, type = 'success') {
             const notif = document.getElementById('notification');
