@@ -283,7 +283,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD5Xf_CugY9KDNobVWH-xjRpML3_I8CP_o",
@@ -299,6 +299,19 @@
         const db = getFirestore(app);
         
         window.dataArsip = [];
+
+        // Inisialisasi Real-time Listener (Menggantikan loadDataFromFirebase)
+        const q = query(collection(db, "arsip_surat"), orderBy("tgl_input", "asc"));
+        onSnapshot(q, (snapshot) => {
+            window.dataArsip = [];
+            snapshot.forEach((doc) => {
+                window.dataArsip.push({ id: doc.id, ...doc.data() });
+            });
+            window.renderTable();
+        }, (error) => {
+            console.error("Error Real-time:", error);
+            window.showNotification("Gagal sinkronisasi data!", "error");
+        });
 
         window.showNotification = function(message, type = 'success') {
             const notif = document.getElementById('notification');
@@ -378,23 +391,6 @@
             document.getElementById('stat-lain').innerText = window.dataArsip.filter(d => d.jenis === 'Lain lain').length;
         };
 
-        async function loadDataFromFirebase() {
-            try {
-                const q = query(collection(db, "arsip_surat"), orderBy("tgl_input", "asc"));
-                const querySnapshot = await getDocs(q);
-                
-                window.dataArsip = [];
-                querySnapshot.forEach((doc) => {
-                    window.dataArsip.push({ id: doc.id, ...doc.data() });
-                });
-                
-                window.renderTable();
-            } catch (error) {
-                console.error("Error mengambil data:", error);
-                window.showNotification("Gagal memuat data dari internet!", "error");
-            }
-        }
-
         document.getElementById('form-surat').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btnSubmit = document.getElementById('btn-submit');
@@ -413,16 +409,12 @@
 
             try {
                 if (editId) {
-                    // JIKA MODE EDIT: Update dokumen yang ada
                     await updateDoc(doc(db, "arsip_surat", editId), payload);
                     window.showNotification("Arsip surat berhasil diperbarui!");
                 } else {
-                    // JIKA MODE BARU: Tambah dokumen baru
                     await addDoc(collection(db, "arsip_surat"), payload);
                     window.showNotification("Arsip surat berhasil disimpan ke Cloud!");
                 }
-                
-                await loadDataFromFirebase();
                 window.toggleModal(false);
                 e.target.reset();
             } catch (error) {
@@ -439,7 +431,6 @@
                 try {
                     await deleteDoc(doc(db, "arsip_surat", id));
                     window.showNotification("Data berhasil dihapus!");
-                    await loadDataFromFirebase();
                 } catch (error) {
                     console.error("Error menghapus dokumen:", error);
                     window.showNotification("Gagal menghapus data!", "error");
@@ -454,15 +445,12 @@
             }
 
             if (confirm("PERINGATAN: Anda akan menghapus SELURUH data kearsipan surat yang tersimpan di cloud secara permanen. Apakah Anda yakin?")) {
-                const konfirmasiLanjutan = confirm("Sekali lagi, data yang dihapus tidak bisa dikembalikan. Lanjutkan hapus massal?");
-                if (konfirmasiLanjutan) {
+                if (confirm("Sekali lagi, data yang dihapus tidak bisa dikembalikan. Lanjutkan hapus massal?")) {
                     window.showNotification("Sedang menghapus semua data...", "error");
                     try {
                         const deletePromises = window.dataArsip.map(d => deleteDoc(doc(db, "arsip_surat", d.id)));
                         await Promise.all(deletePromises);
-                        
                         window.showNotification("Semua data kearsipan berhasil dibersihkan!");
-                        await loadDataFromFirebase();
                     } catch (error) {
                         console.error("Error saat hapus massal:", error);
                         window.showNotification("Terjadi kesalahan saat menghapus data massal!", "error");
@@ -471,7 +459,6 @@
             }
         };
 
-        // MODIFIKASI FUNGSI: Mengakomodasi pengisian data otomatis jika klik tombol Edit
         window.toggleModal = function(show, id = null) {
             const modal = document.getElementById('modal');
             const form = document.getElementById('form-surat');
@@ -480,7 +467,6 @@
             if(show) { 
                 modal.classList.remove('hidden'); 
                 if (id) {
-                    // Jika ada ID -> Masuk Mode Edit
                     title.innerText = "Edit Data Surat";
                     const dataTua = window.dataArsip.find(d => d.id === id);
                     if (dataTua) {
@@ -490,8 +476,6 @@
                         document.getElementById('jenis').value = dataTua.jenis;
                         document.getElementById('uraian').value = dataTua.uraian;
                         
-                        // Memisahkan nomor surat kembali ke input kode & urut
-                        // Mengambil string setelah '/' terakhir sebagai nomor urut
                         const lastSlashIndex = dataTua.no.lastIndexOf('/');
                         if (lastSlashIndex !== -1) {
                             document.getElementById('kode').value = dataTua.no.substring(0, lastSlashIndex + 1);
@@ -502,7 +486,6 @@
                         }
                     }
                 } else {
-                    // Jika tidak ada ID -> Masuk Mode Tambah Baru
                     title.innerText = "Input Surat Baru";
                     form.reset();
                     document.getElementById('edit-id').value = "";
@@ -521,8 +504,20 @@
             document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID', { hour12: false });
             document.getElementById('date-display').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
         }, 1000);
-        
-        loadDataFromFirebase();
     </script>
 </body>
-</html>
+</html>      
+        
+        
+                
+                    
+                    
+                       
+            
+            
+           
+           
+           
+                   
+           
+
