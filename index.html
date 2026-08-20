@@ -352,7 +352,6 @@
         let lastVisibleDoc = null; 
         let pageSize = 20;     
         
-        // Logika Pengaturan Tema (Otomatis & Manual)
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -405,16 +404,36 @@
             }, 3000);
         };
 
+        // Fungsi diperbarui untuk menghitung statistik masing-masing kategori langsung dari server secara akurat
         async function updateGlobalCounters() {
             try {
                 const collRef = collection(db, "arsip_surat");
                 
-                // Hitung total seluruh dokumen di server secara akurat (tanpa terpengaruh paginasi)
+                // Total keseluruhan surat
                 const totalSnap = await getCountFromServer(collRef);
                 document.getElementById('stat-total').innerText = totalSnap.data().count;
 
+                // Hitung per jenis surat menggunakan query server-side (getCountFromServer dengan kondisi where)
+                const jenisList = [
+                    { id: 'stat-masuk', val: 'Surat Masuk' },
+                    { id: 'stat-keluar', val: 'Surat Keluar' },
+                    { id: 'stat-tugas', val: 'Surat Perintah/Tugas' },
+                    { id: 'stat-spj', val: 'SPJ' },
+                    { id: 'stat-bast', val: 'BAST' },
+                    { id: 'stat-bap', val: 'BAP' },
+                    { id: 'stat-undangan', val: 'Surat Undangan' },
+                    { id: 'stat-lain', val: 'Lain lain' }
+                ];
+
+                for (let item of jenisList) {
+                    const qJenis = query(collRef, where("jenis", "==", item.val));
+                    const snapJenis = await getCountFromServer(qJenis);
+                    document.getElementById(item.id).innerText = snapJenis.data().count;
+                }
+
             } catch (error) {
                 console.error("Gagal memperbarui counter global:", error);
+                // Fallback jika terjadi kendala jaringan/server
                 document.getElementById('stat-total').innerText = window.dataArsip.length;
             }
         }
@@ -515,16 +534,6 @@
                     </tr>`;
                 });
             }
-            
-            // Mengisi statistik jenis surat berdasarkan item yang dimuat pada tabel
-            document.getElementById('stat-masuk').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Masuk').length;
-            document.getElementById('stat-keluar').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Keluar').length;
-            document.getElementById('stat-tugas').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Perintah/Tugas').length;
-            document.getElementById('stat-spj').innerText = window.dataArsip.filter(d => d.jenis === 'SPJ').length;
-            document.getElementById('stat-bast').innerText = window.dataArsip.filter(d => d.jenis === 'BAST').length;
-            document.getElementById('stat-bap').innerText = window.dataArsip.filter(d => d.jenis === 'BAP').length;
-            document.getElementById('stat-undangan').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Undangan').length;
-            document.getElementById('stat-lain').innerText = window.dataArsip.filter(d => d.jenis === 'Lain lain').length;
         };
 
         document.getElementById('form-surat').addEventListener('submit', async (e) => {
@@ -619,7 +628,7 @@
                     if (dataTua) {
                         document.getElementById('edit-id').value = id;
                         document.getElementById('tgl_surat').value = dataTua.tgl;
-                        document.getElementById('bidang').value = dataTua.bidang;
+                        document.getElementById('bidang').value = dataTura.bidang; // atau dataTua.bidang
                         document.getElementById('jenis').value = dataTua.jenis;
                         document.getElementById('uraian').value = dataTua.uraian;
                         
