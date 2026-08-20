@@ -92,7 +92,7 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
-        <!-- Statistik Kartu -->
+        <!-- Statistik Kartu Kategori Jenis Surat -->
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
             <div class="bg-gradient-to-br from-blue-400 via-blue-500 to-sky-600 rounded-xl p-4 shadow-lg shadow-blue-500/20 text-white transition transform hover:-translate-y-1">
                 <div class="flex items-center justify-between">
@@ -166,7 +166,21 @@
         <!-- Tabel Konten Utama -->
         <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-indigo-50 dark:border-slate-800 p-6 transition-colors">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <h2 class="text-lg font-bold text-gray-800 dark:text-white">Riwayat Surat</h2>
+                <!-- Judul dan Informasi Total Surat & Update di Sebelahnya -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <h2 class="text-lg font-bold text-gray-800 dark:text-white">Riwayat Surat</h2>
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 shadow-sm">
+                            <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            Total Input: <span id="stat-total" class="font-black">0</span>
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800 shadow-sm">
+                            <svg class="w-3.5 h-3.5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            Total Diperbarui: <span id="stat-update" class="font-black">0</span>
+                        </span>
+                    </div>
+                </div>
+
                 <div class="flex w-full sm:w-auto gap-2">
                     <input type="text" id="search-bar" onkeyup="renderTable()" placeholder="Cari Jenis, Bidang, atau No..." class="w-full pl-4 pr-4 py-2 border border-indigo-100 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-100 rounded-lg text-sm outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all shadow-inner">
                     <button onclick="toggleModal(true)" class="bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 shadow-md hover:scale-102 shrink-0">
@@ -491,6 +505,11 @@
                 });
             }
             
+            // Mengisi data hitungan total surat dan total update
+            document.getElementById('stat-total').innerText = window.dataArsip.length;
+            document.getElementById('stat-update').innerText = window.dataArsip.filter(d => d.is_updated === true).length;
+            
+            // Mengisi statistik jenis surat di atas
             document.getElementById('stat-masuk').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Masuk').length;
             document.getElementById('stat-keluar').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Keluar').length;
             document.getElementById('stat-tugas').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Perintah/Tugas').length;
@@ -513,15 +532,20 @@
                 tgl: document.getElementById('tgl_surat').value,
                 bidang: document.getElementById('bidang').value,
                 jenis: document.getElementById('jenis').value,
-                uraian: document.getElementById('uraian').value,
-                tgl_input: serverTimestamp()
+                uraian: document.getElementById('uraian').value
             };
 
             try {
                 if (editId) {
+                    payload.is_updated = true;
+                    payload.tgl_update = serverTimestamp();
+                    
                     await updateDoc(doc(db, "arsip_surat", editId), payload);
                     window.showNotification("Arsip surat berhasil diperbarui!");
                 } else {
+                    payload.tgl_input = serverTimestamp();
+                    payload.is_updated = false;
+                    
                     await addDoc(collection(db, "arsip_surat"), payload);
                     window.showNotification("Arsip surat berhasil disimpan ke Cloud!");
                 }
