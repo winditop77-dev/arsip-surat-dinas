@@ -41,7 +41,7 @@
                 linear-gradient(60deg, #111827 25%, transparent 25.5%, transparent 75%, #111827 75%, #111827);
         }
         
-        .custom-scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar { height: 8px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; border-radius: 4px; }
@@ -92,9 +92,9 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
-        <!-- Statistik Kartu Kategori Jenis Surat (Dapat Diklik) -->
+        <!-- Statistik Kartu Kategori Jenis Surat -->
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
-            <div onclick="openCategoryModal('Surat Masuk')" class="bg-gradient-to-br from-blue-400 via-blue-500 to-sky-600 rounded-xl p-4 shadow-lg shadow-blue-500/20 text-white transition transform hover:-translate-y-1 cursor-pointer" title="Klik untuk melihat detail Surat Masuk">
+            <div class="bg-gradient-to-br from-blue-400 via-blue-500 to-sky-600 rounded-xl p-4 shadow-lg shadow-blue-500/20 text-white transition transform hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <p class="text-[10px] font-semibold uppercase tracking-wider text-blue-100">Surat Masuk</p>
                     <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13a2 2 0 012 2v9a2 2 0 01-2 2H5l-2 3V4z"></path></svg></div>
@@ -102,7 +102,7 @@
                 <h3 id="stat-masuk" class="text-2xl font-black mt-2 drop-shadow">0</h3>
             </div>
             
-            <div onclick="openCategoryModal('Surat Keluar')" class="bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 rounded-xl p-4 shadow-lg shadow-orange-500/20 text-white transition transform hover:-translate-y-1 cursor-pointer" title="Klik untuk melihat detail Surat Keluar">
+            <div class="bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 rounded-xl p-4 shadow-lg shadow-orange-500/20 text-white transition transform hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <p class="text-[10px] font-semibold uppercase tracking-wider text-orange-100">Surat Keluar</p>
                     <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg></div>
@@ -110,7 +110,7 @@
                 <h3 id="stat-keluar" class="text-2xl font-black mt-2 drop-shadow">0</h3>
             </div>
 
-            <div onclick="openCategoryModal('Surat Perintah/Tugas')" class="bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-600 rounded-xl p-4 shadow-lg shadow-cyan-500/20 text-white transition transform hover:-translate-y-1 cursor-pointer" title="Klik untuk melihat detail Surat Tugas">
+            <div class="bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-600 rounded-xl p-4 shadow-lg shadow-cyan-500/20 text-white transition transform hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <p class="text-[10px] font-semibold uppercase tracking-wider text-cyan-100">Surat Tugas</p>
                     <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg></div>
@@ -118,7 +118,7 @@
                 <h3 id="stat-tugas" class="text-2xl font-black mt-2 drop-shadow">0</h3>
             </div>
 
-            <div onclick="openCategoryModal('SPJ')" class="bg-gradient-to-br from-slate-500 via-slate-600 to-zinc-700 rounded-xl p-4 shadow-lg shadow-slate-600/20 text-white transition transform hover:-translate-y-1 cursor-pointer" title="Klik untuk melihat detail SPJ">
+            <div class="bg-gradient-to-br from-slate-500 via-slate-600 to-zinc-700 rounded-xl p-4 shadow-lg shadow-slate-600/20 text-white transition transform hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-200">SPJ</p>
                     <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg></div>
@@ -126,7 +126,7 @@
                 <h3 id="stat-spj" class="text-2xl font-black mt-2 drop-shadow">0</h3>
             </div>
             
-            <div onclick="openCategoryModal('BAST')" class="bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-600 rounded-xl p-4 shadow-lg shadow-emerald-500/20 text-white transition transform hover:-translate-y-1 cursor-pointer" title="Klik untuk melihat detail BAST">
+            <div class="bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-600 rounded-xl p-4 shadow-lg shadow-emerald-500/20 text-white transition transform hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <p class="text-[10px] font-semibold uppercase tracking-wider text-emerald-100">BAST</p>
                     <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
@@ -134,7 +134,7 @@
                 <h3 id="stat-bast" class="text-2xl font-black mt-2 drop-shadow">0</h3>
             </div>
             
-            <div onclick="openCategoryModal('BAP')" class="bg-gradient-to-br from-fuchsia-400 via-purple-500 to-indigo-600 rounded-xl p-4 shadow-lg shadow-purple-500/20 text-white transition transform hover:-translate-y-1 cursor-pointer" title="Klik untuk melihat detail BAP">
+            <div class="bg-gradient-to-br from-fuchsia-400 via-purple-500 to-indigo-600 rounded-xl p-4 shadow-lg shadow-purple-500/20 text-white transition transform hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <p class="text-[10px] font-semibold uppercase tracking-wider text-fuchsia-100">BAP</p>
                     <div class="p-1 bg-white/20 rounded-md"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
@@ -142,7 +142,7 @@
                 <h3 id="stat-bap" class="text-2xl font-black mt-2 drop-shadow">0</h3>
             </div>
 
-            <div onclick="openCategoryModal('Surat Undangan')" class="bg-gradient-to-br from-rose-400 via-rose-500 to-red-600 rounded-xl p-4 shadow-lg shadow-rose-500/20 text-white transition transform hover:-translate-y-1 cursor-pointer" title="Klik untuk melihat detail Surat Undangan">
+            <div class="bg-gradient-to-br from-rose-400 via-rose-500 to-red-600 rounded-xl p-4 shadow-lg shadow-rose-500/20 text-white transition transform hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <p class="text-[10px] font-semibold uppercase tracking-wider text-rose-100">Surat Undangan</p>
                     <div class="p-1 bg-white/20 rounded-md">
@@ -152,7 +152,7 @@
                 <h3 id="stat-undangan" class="text-2xl font-black mt-2 drop-shadow">0</h3>
             </div>
 
-            <div onclick="openCategoryModal('Lain lain')" class="bg-gradient-to-br from-gray-400 via-gray-500 to-slate-600 rounded-xl p-4 shadow-lg shadow-gray-500/20 text-white transition transform hover:-translate-y-1 cursor-pointer" title="Klik untuk melihat detail Lain lain">
+            <div class="bg-gradient-to-br from-gray-400 via-gray-500 to-slate-600 rounded-xl p-4 shadow-lg shadow-gray-500/20 text-white transition transform hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-100">Lain lain</p>
                     <div class="p-1 bg-white/20 rounded-md">
@@ -238,7 +238,7 @@
         <p id="notif-text" class="text-sm font-medium"></p>
     </div>
 
-    <!-- Modal Form (Input/Edit) -->
+    <!-- Modal Form -->
     <div id="modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4 transition-opacity">
         <div class="relative rounded-2xl p-6 md:p-8 max-w-lg w-full shadow-2xl transform scale-100 transition-transform border border-indigo-500/30 ring-1 ring-white/10 overflow-hidden"
              style="
@@ -331,44 +331,6 @@
         </div>
     </div>
 
-    <!-- Modal Detail Kategori (Klik Kartu Dashboard) -->
-    <div id="category-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4 transition-opacity">
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-8 max-w-4xl w-full shadow-2xl transform scale-100 transition-transform border border-indigo-500/30 flex flex-col max-h-[85vh]">
-            <div class="flex justify-between items-center mb-4 border-b border-gray-200 dark:border-slate-800 pb-4">
-                <div>
-                    <h2 id="category-modal-title" class="text-lg font-extrabold text-gray-800 dark:text-white">Detail Kategori Surat</h2>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Menampilkan daftar surat yang terinput pada kategori ini</p>
-                </div>
-                <button onclick="closeCategoryModal()" class="text-gray-400 hover:text-gray-700 dark:hover:text-white transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            
-            <div class="overflow-y-auto custom-scrollbar flex-grow pr-1">
-                <table class="w-full text-sm text-left">
-                    <thead class="bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 uppercase text-xs font-bold tracking-wider sticky top-0">
-                        <tr>
-                            <th class="py-3 px-4 w-12 text-center">#</th>
-                            <th class="py-3 px-4">No. Surat</th>
-                            <th class="py-3 px-4">Tanggal</th>
-                            <th class="py-3 px-4">Bidang</th>
-                            <th class="py-3 px-4">Uraian / Keterangan</th>
-                        </tr>
-                    </thead>
-                    <tbody id="category-table-body" class="divide-y divide-gray-100 dark:divide-slate-800">
-                        <!-- Data dimasukkan lewat Javascript -->
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="pt-4 border-t border-gray-200 dark:border-slate-800 flex justify-end">
-                <button onclick="closeCategoryModal()" class="px-5 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-semibold transition-colors">
-                    Tutup
-                </button>
-            </div>
-        </div>
-    </div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, query, orderBy, limit, startAfter, getDocs, getCountFromServer, where, serverTimestamp, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -442,13 +404,16 @@
             }, 3000);
         };
 
+        // Fungsi diperbarui untuk menghitung statistik masing-masing kategori langsung dari server secara akurat
         async function updateGlobalCounters() {
             try {
                 const collRef = collection(db, "arsip_surat");
                 
+                // Total keseluruhan surat
                 const totalSnap = await getCountFromServer(collRef);
                 document.getElementById('stat-total').innerText = totalSnap.data().count;
 
+                // Hitung per jenis surat menggunakan query server-side (getCountFromServer dengan kondisi where)
                 const jenisList = [
                     { id: 'stat-masuk', val: 'Surat Masuk' },
                     { id: 'stat-keluar', val: 'Surat Keluar' },
@@ -468,6 +433,7 @@
 
             } catch (error) {
                 console.error("Gagal memperbarui counter global:", error);
+                // Fallback jika terjadi kendala jaringan/server
                 document.getElementById('stat-total').innerText = window.dataArsip.length;
             }
         }
@@ -570,50 +536,6 @@
             }
         };
 
-        // Fungsi membuka modal berdasarkan kategori saat kartu diklik
-        window.openCategoryModal = async function(jenisSurat) {
-            const modal = document.getElementById('category-modal');
-            const title = document.getElementById('category-modal-title');
-            const tbody = document.getElementById('category-table-body');
-            
-            title.innerText = `Detail Kategori: ${jenisSurat}`;
-            tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-400 font-medium">Memuat data kategori...</td></tr>`;
-            modal.classList.remove('hidden');
-
-            try {
-                // Ambil data langsung dari database Firestore sesuai jenis surat yang diklik
-                const q = query(collection(db, "arsip_surat"), where("jenis", "==", jenisSurat), orderBy("tgl_input", "desc"));
-                const querySnapshot = await getDocs(q);
-                
-                tbody.innerHTML = '';
-                if (querySnapshot.empty) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-500 dark:text-gray-400 font-medium">Belum ada data untuk kategori ini.</td></tr>`;
-                } else {
-                    let no = 1;
-                    querySnapshot.forEach((docSnap) => {
-                        const d = docSnap.data();
-                        const dateStr = d.tgl ? d.tgl.split('-').reverse().join('-') : '-';
-                        tbody.innerHTML += `
-                            <tr class="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
-                                <td class="py-3 px-4 text-center font-bold text-gray-500">${no++}</td>
-                                <td class="py-3 px-4 font-bold text-indigo-600 dark:text-indigo-400">${d.no}</td>
-                                <td class="py-3 px-4 text-gray-600 dark:text-gray-300 whitespace-nowrap">${dateStr}</td>
-                                <td class="py-3 px-4 text-gray-700 dark:text-slate-300 font-medium">${d.bidang}</td>
-                                <td class="py-3 px-4 text-gray-700 dark:text-slate-300">${d.uraian}</td>
-                            </tr>
-                        `;
-                    });
-                }
-            } catch (error) {
-                console.error("Gagal mengambil data kategori:", error);
-                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-red-500 font-medium">Gagal memuat data dari server.</td></tr>`;
-            }
-        };
-
-        window.closeCategoryModal = function() {
-            document.getElementById('category-modal').classList.add('hidden');
-        };
-
         document.getElementById('form-surat').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btnSubmit = document.getElementById('btn-submit');
@@ -706,7 +628,7 @@
                     if (dataTua) {
                         document.getElementById('edit-id').value = id;
                         document.getElementById('tgl_surat').value = dataTua.tgl;
-                        document.getElementById('bidang').value = dataTua.bidang;
+                        document.getElementById('bidang').value = dataTura.bidang; // atau dataTua.bidang
                         document.getElementById('jenis').value = dataTua.jenis;
                         document.getElementById('uraian').value = dataTua.uraian;
                         
