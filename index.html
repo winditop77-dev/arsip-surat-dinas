@@ -166,17 +166,13 @@
         <!-- Tabel Konten Utama -->
         <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-indigo-50 dark:border-slate-800 p-6 transition-colors">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <!-- Judul dan Informasi Total Surat & Update di Sebelahnya -->
+                <!-- Judul dan Informasi Total Surat -->
                 <div class="flex flex-wrap items-center gap-3">
                     <h2 class="text-lg font-bold text-gray-800 dark:text-white">Riwayat Surat</h2>
                     <div class="flex items-center gap-2">
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 shadow-sm">
                             <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                             Total Input: <span id="stat-total" class="font-black">0</span>
-                        </span>
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800 shadow-sm">
-                            <svg class="w-3.5 h-3.5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                            Total Diperbarui: <span id="stat-update" class="font-black">0</span>
                         </span>
                     </div>
                 </div>
@@ -337,7 +333,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, limit, startAfter, getDocs, serverTimestamp, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, limit, startAfter, getDocs, getCountFromServer, where, serverTimestamp, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD5Xf_CugY9KDNobVWH-xjRpML3_I8CP_o",
@@ -409,6 +405,20 @@
             }, 3000);
         };
 
+        async function updateGlobalCounters() {
+            try {
+                const collRef = collection(db, "arsip_surat");
+                
+                // Hitung total seluruh dokumen di server secara akurat (tanpa terpengaruh paginasi)
+                const totalSnap = await getCountFromServer(collRef);
+                document.getElementById('stat-total').innerText = totalSnap.data().count;
+
+            } catch (error) {
+                console.error("Gagal memperbarui counter global:", error);
+                document.getElementById('stat-total').innerText = window.dataArsip.length;
+            }
+        }
+
         async function loadDataFromFirebase(isLoadMore = false) {
             try {
                 let q;
@@ -439,6 +449,7 @@
                 });
 
                 window.renderTable();
+                await updateGlobalCounters();
 
                 if (querySnapshot.docs.length < pageSize) {
                     document.getElementById('load-more-container').style.display = 'none';
@@ -505,11 +516,7 @@
                 });
             }
             
-            // Mengisi data hitungan total surat dan total update
-            document.getElementById('stat-total').innerText = window.dataArsip.length;
-            document.getElementById('stat-update').innerText = window.dataArsip.filter(d => d.is_updated === true).length;
-            
-            // Mengisi statistik jenis surat di atas
+            // Mengisi statistik jenis surat berdasarkan item yang dimuat pada tabel
             document.getElementById('stat-masuk').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Masuk').length;
             document.getElementById('stat-keluar').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Keluar').length;
             document.getElementById('stat-tugas').innerText = window.dataArsip.filter(d => d.jenis === 'Surat Perintah/Tugas').length;
