@@ -726,7 +726,8 @@
         setInterval(() => {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID', { hour12: false });
-            document.getElementById('date-display').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
+            // Bulan diatur menggunakan 'long' agar tampil lengkap (Agustus)
+            document.getElementById('date-display').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         }, 1000);
         
         loadDataFromFirebase(false);
