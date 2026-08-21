@@ -92,7 +92,7 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
-        <!-- Statistik Kartu Kategori Jenis Surat -->
+        <!-- Statistik Kartu Kategori Jenis Surat (Kembali ke 8 Kolom Utama) -->
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
             <div class="bg-gradient-to-br from-blue-400 via-blue-500 to-sky-600 rounded-xl p-4 shadow-lg shadow-blue-500/20 text-white transition transform hover:-translate-y-1">
                 <div class="flex items-center justify-between">
@@ -166,13 +166,20 @@
         <!-- Tabel Konten Utama -->
         <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-indigo-50 dark:border-slate-800 p-6 transition-colors">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <!-- Judul dan Informasi Total Surat -->
+                <!-- Judul dan Informasi Total Surat serta Jumlah Diperbaharui -->
                 <div class="flex flex-wrap items-center gap-3">
                     <h2 class="text-lg font-bold text-gray-800 dark:text-white">Riwayat Surat</h2>
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <!-- Total Input -->
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 shadow-sm">
                             <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                             Total Input: <span id="stat-total" class="font-black">0</span>
+                        </span>
+                        
+                        <!-- Jumlah Diperbaharui tepat di sebelah Total Input -->
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 shadow-sm">
+                            <svg class="w-3.5 h-3.5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            Diperbaharui: <span id="stat-updated" class="font-black">0</span>
                         </span>
                     </div>
                 </div>
@@ -190,20 +197,21 @@
             </div>
             
             <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-sm text-left min-w-[700px]">
+                <table class="w-full text-sm text-left min-w-[800px]">
                     <thead class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white uppercase text-xs font-bold tracking-wider">
                         <tr>
                             <th class="py-4 px-6 w-12 text-center rounded-tl-lg">#</th>
                             <th class="py-4 px-6">No. Surat</th>
                             <th class="py-4 px-6">Tanggal</th>
                             <th class="py-4 px-6">Bidang</th>
-                            <th class="py-4 px-6 text-center w-48">Jenis</th>
+                            <th class="py-4 px-6 text-center w-40">Jenis</th>
+                            <th class="py-4 px-6 text-center w-36">Status</th>
                             <th class="py-4 px-6">Uraian / Keterangan</th>
                             <th class="py-4 px-6 w-24 text-center rounded-tr-lg">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="table-body" class="divide-y divide-indigo-50 dark:divide-slate-800 bg-white dark:bg-slate-900">
-                        <tr><td colspan="7" class="py-8 text-center text-gray-400 font-medium">Memuat data kearsipan...</td></tr>
+                        <tr><td colspan="8" class="py-8 text-center text-gray-400 font-medium">Memuat data kearsipan...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -404,7 +412,6 @@
             }, 3000);
         };
 
-        // Fungsi diperbarui untuk menghitung statistik masing-masing kategori langsung dari server secara akurat
         async function updateGlobalCounters() {
             try {
                 const collRef = collection(db, "arsip_surat");
@@ -413,7 +420,12 @@
                 const totalSnap = await getCountFromServer(collRef);
                 document.getElementById('stat-total').innerText = totalSnap.data().count;
 
-                // Hitung per jenis surat menggunakan query server-side (getCountFromServer dengan kondisi where)
+                // Hitung total surat yang diperbaharui (is_updated == true)
+                const qUpdated = query(collRef, where("is_updated", "==", true));
+                const snapUpdated = await getCountFromServer(qUpdated);
+                document.getElementById('stat-updated').innerText = snapUpdated.data().count;
+
+                // Hitung per jenis surat menggunakan query server-side
                 const jenisList = [
                     { id: 'stat-masuk', val: 'Surat Masuk' },
                     { id: 'stat-keluar', val: 'Surat Keluar' },
@@ -433,7 +445,6 @@
 
             } catch (error) {
                 console.error("Gagal memperbarui counter global:", error);
-                // Fallback jika terjadi kendala jaringan/server
                 document.getElementById('stat-total').innerText = window.dataArsip.length;
             }
         }
@@ -493,7 +504,7 @@
             
             body.innerHTML = '';
             if (filtered.length === 0) {
-                body.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-gray-500 dark:text-gray-400 font-medium">Tidak ada data arsip ditemukan.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="8" class="py-12 text-center text-gray-500 dark:text-gray-400 font-medium">Tidak ada data arsip ditemukan.</td></tr>`;
             } else {
                 filtered.forEach((d, index) => {
                     const dateStr = d.tgl ? d.tgl.split('-').reverse().join('-') : '-';
@@ -511,6 +522,22 @@
                     else if (d.jenis === 'Surat Undangan') { rowBgClass = 'bg-rose-50/70 dark:bg-rose-950/30'; typeBadgeClass = 'bg-rose-500 text-white'; borderLeftAccent = 'border-l-4 border-rose-500'; textAccentClass = 'text-rose-700 dark:text-rose-400'; }
                     else if (d.jenis === 'Lain lain') { rowBgClass = 'bg-gray-50/70 dark:bg-gray-800/30'; typeBadgeClass = 'bg-gray-500 text-white'; borderLeftAccent = 'border-l-4 border-gray-500'; textAccentClass = 'text-gray-700 dark:text-gray-300'; }
 
+                    // Status Badge
+                    let statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">Baru (Asli)</span>`;
+                    if (d.is_updated) {
+                        let updateTimeStr = '';
+                        if (d.tgl_update && d.tgl_update.toDate) {
+                            updateTimeStr = d.tgl_update.toDate().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+                        }
+                        statusBadge = `<span class="inline-flex flex-col items-center gap-0.5 px-2.5 py-1 text-[11px] font-bold rounded-md bg-purple-50 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 shadow-xs" title="${updateTimeStr ? 'Diperbarui pada: ' + updateTimeStr : 'Data telah diperbarui'}">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-3 h-3 text-purple-500 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                Diperbaharui
+                            </span>
+                            ${updateTimeStr ? `<span class="text-[9px] font-normal opacity-75">${updateTimeStr}</span>` : ''}
+                        </span>`;
+                    }
+
                     body.innerHTML += `
                     <tr class="${rowBgClass} transition-all duration-150 hover:opacity-90">
                         <td class="py-4 px-6 text-center font-bold text-gray-500 dark:text-gray-400 ${borderLeftAccent}">${index + 1}</td>
@@ -518,9 +545,12 @@
                         <td class="py-4 px-6 font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">${dateStr}</td>
                         <td class="py-4 px-6 font-semibold text-slate-700 dark:text-slate-300">${d.bidang}</td>
                         <td class="py-4 px-6 text-center">
-                            <span class="inline-flex justify-center w-44 px-3 py-1.5 text-xs font-bold rounded-full border border-white/20 tracking-wide uppercase ${typeBadgeClass}">
+                            <span class="inline-flex justify-center w-36 px-3 py-1.5 text-xs font-bold rounded-full border border-white/20 tracking-wide uppercase ${typeBadgeClass}">
                                 ${d.jenis}
                             </span>
+                        </td>
+                        <td class="py-4 px-6 text-center">
+                            ${statusBadge}
                         </td>
                         <td class="py-4 px-6 font-medium text-slate-700 dark:text-slate-300 max-w-xs truncate" title="${d.uraian}">${d.uraian}</td>
                         <td class="py-4 px-6 text-center flex justify-center gap-2 items-center">
@@ -628,7 +658,7 @@
                     if (dataTua) {
                         document.getElementById('edit-id').value = id;
                         document.getElementById('tgl_surat').value = dataTua.tgl;
-                        document.getElementById('bidang').value = dataTura.bidang; // atau dataTua.bidang
+                        document.getElementById('bidang').value = dataTua.bidang;
                         document.getElementById('jenis').value = dataTua.jenis;
                         document.getElementById('uraian').value = dataTua.uraian;
                         
