@@ -99,30 +99,34 @@
    <header class="glossy-flag-header border-b border-white/20 sticky top-0 z-30 shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4 relative z-10">
             <div class="flex items-center gap-4">
-                <div class="w-16 h-16 flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-1 rounded-xl shadow-md border border-white/30 shrink-0">
+                <div class="w-16 h-16 flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-1 rounded-xl shadow-md border border-amber-400/30 shrink-0">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo-Tut-Wuri-Handayani-PNG-Warna.png" 
                          alt="Logo Tut Wuri Handayani" 
                          class="w-full h-full object-contain">
                 </div>
                 <div>
-                    <h1 class="text-xl font-black text-white leading-tight tracking-wide drop-shadow-md">SISTEM KEARSIPAN SURAT</h1>
-                    <p class="text-xs text-slate-100 font-bold uppercase tracking-widest mt-0.5 drop-shadow">Dinas Pendidikan Kota Surakarta</p>
+                    <!-- Teks Judul Utama: Kuning Emas -->
+                    <h1 class="text-xl font-black text-amber-300 leading-tight tracking-wide drop-shadow-md">SISTEM KEARSIPAN SURAT</h1>
+                    <!-- Teks Subtitle: Kuning Emas Terang -->
+                    <p class="text-xs text-amber-200 font-bold uppercase tracking-widest mt-0.5 drop-shadow">Dinas Pendidikan Kota Surakarta</p>
                 </div>
             </div>
             
             <div class="flex items-center gap-2">
-                <!-- Tombol Toggle Dark Mode Manual -->
-                <button onclick="toggleDarkMode()" id="dark-mode-btn" class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-bold text-white bg-slate-900/40 backdrop-blur-md border border-white/30 shadow-sm hover:bg-slate-900/60 transition-all" title="Ubah Tema Terang/Gelap">
-                    <svg id="theme-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <!-- Tombol Toggle Dark Mode Manual: Teks Kuning Emas & Border Emas Halus -->
+                <button onclick="toggleDarkMode()" id="dark-mode-btn" class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-bold text-amber-300 bg-slate-900/50 backdrop-blur-md border border-amber-400/30 shadow-sm hover:bg-slate-900/70 transition-all" title="Ubah Tema Terang/Gelap">
+                    <svg id="theme-icon" class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
                     <span id="theme-text" class="hidden sm:inline">Tema</span>
                 </button>
 
-                <div id="date-display" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold text-white bg-slate-900/40 backdrop-blur-md border border-white/30 shadow-sm">
+                <!-- Tanggal: Teks Kuning Emas -->
+                <div id="date-display" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold text-amber-300 bg-slate-900/50 backdrop-blur-md border border-amber-400/30 shadow-sm">
                     --/--/----
                 </div>
-                <div id="clock" class="text-sm font-mono font-bold text-white bg-slate-900/60 backdrop-blur-md px-4 py-2 rounded-lg border border-white/20 shadow-sm">
+                <!-- Jam: Teks Kuning Emas -->
+                <div id="clock" class="text-sm font-mono font-bold text-amber-300 bg-slate-900/60 backdrop-blur-md px-4 py-2 rounded-lg border border-amber-400/30 shadow-sm">
                     --:--:--
                 </div>
             </div>
@@ -130,7 +134,7 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
-        <!-- Statistik Kartu Kategori Jenis Surat (Kembali ke 8 Kolom Utama) -->
+        <!-- Statistik Kartu Kategori Jenis Surat -->
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
             <div class="bg-gradient-to-br from-blue-400 via-blue-500 to-sky-600 rounded-xl p-4 shadow-lg shadow-blue-500/20 text-white transition transform hover:-translate-y-1">
                 <div class="flex items-center justify-between">
@@ -454,16 +458,13 @@
             try {
                 const collRef = collection(db, "arsip_surat");
                 
-                // Total keseluruhan surat
                 const totalSnap = await getCountFromServer(collRef);
                 document.getElementById('stat-total').innerText = totalSnap.data().count;
 
-                // Hitung total surat yang diperbaharui (is_updated == true)
                 const qUpdated = query(collRef, where("is_updated", "==", true));
                 const snapUpdated = await getCountFromServer(qUpdated);
                 document.getElementById('stat-updated').innerText = snapUpdated.data().count;
 
-                // Hitung per jenis surat menggunakan query server-side
                 const jenisList = [
                     { id: 'stat-masuk', val: 'Surat Masuk' },
                     { id: 'stat-keluar', val: 'Surat Keluar' },
@@ -560,7 +561,6 @@
                     else if (d.jenis === 'Surat Undangan') { rowBgClass = 'bg-rose-50/70 dark:bg-rose-950/30'; typeBadgeClass = 'bg-rose-500 text-white'; borderLeftAccent = 'border-l-4 border-rose-500'; textAccentClass = 'text-rose-700 dark:text-rose-400'; }
                     else if (d.jenis === 'Lain lain') { rowBgClass = 'bg-gray-50/70 dark:bg-gray-800/30'; typeBadgeClass = 'bg-gray-500 text-white'; borderLeftAccent = 'border-l-4 border-gray-500'; textAccentClass = 'text-gray-700 dark:text-gray-300'; }
 
-                    // Status Badge
                     let statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">Baru (Asli)</span>`;
                     if (d.is_updated) {
                         let updateTimeStr = '';
