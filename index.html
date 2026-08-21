@@ -54,37 +54,75 @@
             background-color: rgba(15, 23, 42, 0.95);
             border-color: rgba(51, 65, 85, 0.5);
         }
+
+        /* Styling Animasi Kilau Glossy Bendera Merah Putih */
+        .glossy-flag-header {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #b91c1c 0%, #dc2626 48%, #ffffff 52%, #f8fafc 100%);
+            background-size: 200% 200%;
+            animation: flagShift 8s ease infinite;
+        }
+
+        .glossy-flag-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: glossyShine 3s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes flagShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes glossyShine {
+            0% { transform: translateY(-100%) rotate(30deg); }
+            100% { transform: translateY(100%) rotate(30deg); }
+        }
     </style>
 </head>
 <body class="text-gray-800 dark:text-gray-100 flex flex-col min-h-screen">
 
-   <header class="bg-[#0b132b] border-b border-[#e5ad67]/30 sticky top-0 z-30 shadow-md">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
+   <header class="glossy-flag-header border-b border-white/20 sticky top-0 z-30 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4 relative z-10">
             <div class="flex items-center gap-4">
-                <div class="w-16 h-16 flex items-center justify-center bg-[#0d234d] p-1 rounded-xl shadow-md border border-[#e5ad67]/20 shrink-0">
+                <div class="w-16 h-16 flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-1 rounded-xl shadow-md border border-white/30 shrink-0">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo-Tut-Wuri-Handayani-PNG-Warna.png" 
                          alt="Logo Tut Wuri Handayani" 
                          class="w-full h-full object-contain">
                 </div>
                 <div>
-                    <h1 class="text-xl font-black text-[#e5ad67] leading-tight tracking-wide">SISTEM KEARSIPAN SURAT</h1>
-                    <p class="text-xs text-slate-300 font-bold uppercase tracking-widest mt-0.5">Dinas Pendidikan Kota Surakarta</p>
+                    <h1 class="text-xl font-black text-white leading-tight tracking-wide drop-shadow-md">SISTEM KEARSIPAN SURAT</h1>
+                    <p class="text-xs text-slate-100 font-bold uppercase tracking-widest mt-0.5 drop-shadow">Dinas Pendidikan Kota Surakarta</p>
                 </div>
             </div>
             
             <div class="flex items-center gap-2">
                 <!-- Tombol Toggle Dark Mode Manual -->
-                <button onclick="toggleDarkMode()" id="dark-mode-btn" class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-bold text-amber-200 bg-amber-950/40 border border-[#e5ad67]/30 shadow-sm hover:bg-amber-900/50 transition-all" title="Ubah Tema Terang/Gelap">
+                <button onclick="toggleDarkMode()" id="dark-mode-btn" class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-bold text-white bg-slate-900/40 backdrop-blur-md border border-white/30 shadow-sm hover:bg-slate-900/60 transition-all" title="Ubah Tema Terang/Gelap">
                     <svg id="theme-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
                     <span id="theme-text" class="hidden sm:inline">Tema</span>
                 </button>
 
-                <div id="date-display" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold text-amber-200 bg-amber-950/40 border border-[#e5ad67]/30 shadow-sm">
+                <div id="date-display" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold text-white bg-slate-900/40 backdrop-blur-md border border-white/30 shadow-sm">
                     --/--/----
                 </div>
-                <div id="clock" class="text-sm font-mono font-bold text-slate-100 bg-slate-900/60 px-4 py-2 rounded-lg border border-slate-800 shadow-sm">
+                <div id="clock" class="text-sm font-mono font-bold text-white bg-slate-900/60 backdrop-blur-md px-4 py-2 rounded-lg border border-white/20 shadow-sm">
                     --:--:--
                 </div>
             </div>
