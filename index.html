@@ -30,12 +30,18 @@
         }
 
         @media print {
-    /* Sembunyikan elemen yang tidak perlu dicetak */
+    /* 1. Sembunyikan elemen web yang tidak perlu dicetak */
     header, footer, .grid, #search-bar, button, #load-more-container, .no-print {
         display: none !important;
     }
 
-    /* Atur agar body bersih dan menggunakan font Arial 12pt */
+    /* 2. Sembunyikan khusus teks "Riwayat Surat" dan badge statistik (Total Input & Diperbaharui) */
+    main > div > div:first-of-type,
+    .flex.flex-wrap.items-center.gap-3 {
+        display: none !important;
+    }
+
+    /* 3. Pengaturan umum halaman cetak */
     body {
         background: white !important;
         background-image: none !important;
@@ -50,7 +56,20 @@
         margin: 0 !important;
     }
 
-    /* Pastikan tabel memenuhi lebar halaman kertas dan tidak terpotong */
+    /* 4. Judul laporan otomatis tampil dan posisinya tepat di tengah (center) */
+    .print-header {
+        display: block !important;
+        text-align: center !important;
+        margin-bottom: 25px !important;
+        width: 100% !important;
+    }
+
+    .print-header h2, .print-header h3 {
+        text-align: center !important;
+        margin: 0 auto 5px auto !important;
+    }
+
+    /* 5. Pengaturan tabel agar rapi dan tidak terpotong */
     table {
         width: 100% !important;
         border-collapse: collapse !important;
@@ -69,18 +88,11 @@
         font-weight: bold !important;
     }
 
-    /* Sembunyikan kolom Status, Uraian, dan Aksi (Kolom ke-6, 7, dan 8) saat dicetak */
+    /* 6. Menyembunyikan kolom Status, Uraian, dan Aksi saat dicetak (hanya menyisakan No, No Surat, Tanggal, Bidang, Jenis) */
     table tr th:nth-child(6), table tr td:nth-child(6),
     table tr th:nth-child(7), table tr td:nth-child(7),
     table tr th:nth-child(8), table tr td:nth-child(8) {
         display: none !important;
-    }
-
-    /* Judul laporan cetak otomatis muncul */
-    .print-header {
-        display: block !important;
-        text-align: center;
-        margin-bottom: 20px;
     }
 }
 
