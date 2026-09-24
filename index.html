@@ -491,11 +491,42 @@
 
         async function loadDataFromFirebase(isLoadMore = false) {
             try {
+                const collRef = collection(db, "arsip_surat");
+
+                // 1. HITUNG TOTAL KESELURUHAN DATA di database (menampilkan angka total riil di dashboard)
+                const totalSnap = await getCountFromServer(collRef);
+                const totalRealCount = totalSnap.data().count;
+                document.getElementById('stat-total').innerText = totalRealCount;
+
+                // 2. HITUNG JUMLAH DATA YANG DIPERBAHARUI
+                const qUpdated = query(collRef, where("is_updated", "==", true));
+                const snapUpdated = await getCountFromServer(qUpdated);
+                document.getElementById('stat-updated').innerText = snapUpdated.data().count;
+
+                // Hitung statistik kategori jenis surat lainnya
+                const jenisList = [
+                    { id: 'stat-masuk', val: 'Surat Masuk' },
+                    { id: 'stat-keluar', val: 'Surat Keluar' },
+                    { id: 'stat-tugas', val: 'Surat Perintah/Tugas' },
+                    { id: 'stat-spj', val: 'SPJ' },
+                    { id: 'stat-bast', val: 'BAST' },
+                    { id: 'stat-bap', val: 'BAP' },
+                    { id: 'stat-undangan', val: 'Surat Undangan' },
+                    { id: 'stat-lain', val: 'Lain lain' }
+                ];
+
+                for (let item of jenisList) {
+                    const qJenis = query(collRef, where("jenis", "==", item.val));
+                    const snapJenis = await getCountFromServer(qJenis);
+                    document.getElementById(item.id).innerText = snapJenis.data().count;
+                }
+
+                // 3. AMBIL DATA SESUAI UKURAN PAGINASI/LIMIT YANG DIPILIH (misal: 20, 50, 100, hingga 1000)
                 let q;
                 if (isLoadMore && lastVisibleDoc) {
-                    q = query(collection(db, "arsip_surat"), orderBy("tgl_input", "desc"), startAfter(lastVisibleDoc), limit(pageSize));
+                    q = query(collRef, orderBy("tgl_input", "desc"), startAfter(lastVisibleDoc), limit(pageSize));
                 } else {
-                    q = query(collection(db, "arsip_surat"), orderBy("tgl_input", "desc"), limit(pageSize));
+                    q = query(collRef, orderBy("tgl_input", "desc"), limit(pageSize));
                 }
 
                 const querySnapshot = await getDocs(q);
@@ -519,7 +550,6 @@
                 });
 
                 window.renderTable();
-                await updateGlobalCounters();
 
                 if (querySnapshot.docs.length < pageSize) {
                     document.getElementById('load-more-container').style.display = 'none';
@@ -528,7 +558,7 @@
                 }
 
             } catch (error) {
-                console.error("Error mengambil data:", error);
+                console.error("Gagal memuat data:", error);
                 window.showNotification("Gagal memuat data dari internet!", "error");
             }
         }
