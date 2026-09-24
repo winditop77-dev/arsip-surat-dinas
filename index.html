@@ -538,8 +538,23 @@
 
         window.renderTable = function() {
             const body = document.getElementById('table-body');
-            const search = (document.getElementById('search-bar').value || "").toLowerCase();
-            const filtered = window.dataArsip.filter(d => (d.jenis || "").toLowerCase().includes(search) || (d.bidang || "").toLowerCase().includes(search) || (d.no || "").toLowerCase().includes(search) || (d.uraian || "").toLowerCase().includes(search));
+            const searchInput = document.getElementById('search-bar');
+            
+            // Ambil nilai pencarian, bersihkan spasi berlebih, dan ubah ke huruf kecil
+            const search = (searchInput ? searchInput.value : "").trim().toLowerCase();
+            
+            // Filter data dengan pengecekan yang lebih aman dan fleksibel
+            const filtered = window.dataArsip.filter(d => {
+                const jenis = (d.jenis || "").toLowerCase();
+                const bidang = (d.bidang || "").toLowerCase();
+                const noSurat = (d.no || "").toLowerCase();
+                const uraian = (d.uraian || "").toLowerCase();
+
+                return jenis.includes(search) || 
+                       bidang.includes(search) || 
+                       noSurat.includes(search) || 
+                       uraian.includes(search);
+            });
             
             body.innerHTML = '';
             if (filtered.length === 0) {
